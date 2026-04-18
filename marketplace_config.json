@@ -1,0 +1,60 @@
+{
+  "monitor": {
+    "enabled": true,
+    "type": "facebook_marketplace",
+    "name": "Used Car Monitor"
+  },
+  "search_criteria": {
+    "brands": ["Toyota", "Honda", "Lexus"],
+    "year_range": {
+      "min": 2010,
+      "max": 2015
+    },
+    "price": {
+      "max": 12500,
+      "currency": "USD"
+    },
+    "locations": [
+      {
+        "name": "Columbus",
+        "state": "Ohio"
+      },
+      {
+        "name": "Johnstown",
+        "state": "Ohio"
+      },
+      {
+        "name": "Newark",
+        "state": "Ohio"
+      },
+      {
+        "name": "New Albany",
+        "state": "Ohio"
+      }
+    ]
+  },
+  "notification": {
+    "enabled": true,
+    "method": "telegram",
+    "schedule": {
+      "time_window": {
+        "start": "08:00",
+        "end": "20:00"
+      },
+      "check_interval_hours": 4,
+      "notification_times": ["08:00", "12:00", "16:00", "20:00"]
+    },
+    "format": {
+      "include_photos": true,
+      "include_mileage": true,
+      "include_url": true,
+      "show_best_matches_only": true,
+      "max_results_per_notification": 5
+    }
+  },
+  "database": {
+    "location": "./marketplace_listings.json",
+    "track_seen_listings": true,
+    "retention_days": 30
+  }
+}

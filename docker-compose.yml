@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  hospital-api:
+    build: .
+    container_name: hospital-pricing-api
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+      DATABASE_PATH: /app/data/hospital_pricing.db
+      DATA_DIR: /app/hospital_data
+    volumes:
+      - ./hospital_data:/app/hospital_data
+      - hospital_data_volume:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  hospital_data_volume:
+    driver: local

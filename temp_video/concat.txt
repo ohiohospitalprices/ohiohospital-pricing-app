@@ -1,0 +1,30 @@
+file 'C:\Users\Owner\Desktop\TikTok_Resized\download hearse_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\download prison_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\Frippers-makers_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-1716863957_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-2706810849_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-107910903_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-1801312799_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-2430578495_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-2467464917_resized.jpg'
+duration 5
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-3281209669_resized.jpg'
+duration 8
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-3373467249_resized.jpg'
+duration 8
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-3464079385_resized.jpg'
+duration 8
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-3505066323_resized.jpg'
+duration 8
+file 'C:\Users\Owner\Desktop\TikTok_Resized\OIP-4076698131_resized.jpg'
+duration 8
+file 'C:\Users\Owner\Desktop\TikTok_Resized\download 333_resized.jpg'
+duration 5

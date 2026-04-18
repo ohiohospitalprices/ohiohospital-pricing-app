@@ -1,0 +1,53 @@
+2026-04-05 03:11:03,695 - INFO - Marketplace Monitor Starting...
+2026-04-05 03:11:03,696 - INFO - ============================================================
+2026-04-05 03:11:03,696 - INFO - Starting marketplace check
+2026-04-05 03:11:03,696 - INFO - Time: 2026-04-05 03:11:03
+2026-04-05 03:11:03,696 - INFO - ============================================================
+2026-04-05 03:11:03,696 - INFO - Initializing Chrome WebDriver...
+2026-04-05 03:11:08,267 - ERROR - Failed to initialize WebDriver: Message: session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff73e8029c5+2ed785]
+	chromedriver!GetHandleVerifier [0x7ff73e52a0d0+14e90]
+	chromedriver!(No symbol) [0x7ff73e28db2d]
+	chromedriver!(No symbol) [0x7ff73e2ce396]
+	chromedriver!(No symbol) [0x7ff73e2c97a1]
+	chromedriver!(No symbol) [0x7ff73e31dc51]
+	chromedriver!(No symbol) [0x7ff73e31d4b6]
+	chromedriver!(No symbol) [0x7ff73e2d9298]
+	chromedriver!(No symbol) [0x7ff73e2da183]
+	chromedriver!GetHandleVerifier [0x7ff73e82de0d+318bcd]
+	chromedriver!GetHandleVerifier [0x7ff73e828588+313348]
+	chromedriver!GetHandleVerifier [0x7ff73e849d7a+334b3a]
+	chromedriver!GetHandleVerifier [0x7ff73e546785+31545]
+	chromedriver!GetHandleVerifier [0x7ff73e54facc+3a88c]
+	chromedriver!GetHandleVerifier [0x7ff73e533634+1e3f4]
+	chromedriver!GetHandleVerifier [0x7ff73e5337e6+1e5a6]
+	chromedriver!GetHandleVerifier [0x7ff73e517e37+2bf7]
+	KERNEL32!BaseThreadInitThunk [0x7ffb1fd4e8d7+17]
+	ntdll!RtlUserThreadStart [0x7ffb2154c48c+2c]
+
+2026-04-05 03:11:08,267 - ERROR - Make sure ChromeDriver is installed at: C:\Users\Owner\Downloads\chromedriver.exe
+2026-04-05 03:11:08,267 - ERROR - Error during check: Message: session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff73e8029c5+2ed785]
+	chromedriver!GetHandleVerifier [0x7ff73e52a0d0+14e90]
+	chromedriver!(No symbol) [0x7ff73e28db2d]
+	chromedriver!(No symbol) [0x7ff73e2ce396]
+	chromedriver!(No symbol) [0x7ff73e2c97a1]
+	chromedriver!(No symbol) [0x7ff73e31dc51]
+	chromedriver!(No symbol) [0x7ff73e31d4b6]
+	chromedriver!(No symbol) [0x7ff73e2d9298]
+	chromedriver!(No symbol) [0x7ff73e2da183]
+	chromedriver!GetHandleVerifier [0x7ff73e82de0d+318bcd]
+	chromedriver!GetHandleVerifier [0x7ff73e828588+313348]
+	chromedriver!GetHandleVerifier [0x7ff73e849d7a+334b3a]
+	chromedriver!GetHandleVerifier [0x7ff73e546785+31545]
+	chromedriver!GetHandleVerifier [0x7ff73e54facc+3a88c]
+	chromedriver!GetHandleVerifier [0x7ff73e533634+1e3f4]
+	chromedriver!GetHandleVerifier [0x7ff73e5337e6+1e5a6]
+	chromedriver!GetHandleVerifier [0x7ff73e517e37+2bf7]
+	KERNEL32!BaseThreadInitThunk [0x7ffb1fd4e8d7+17]
+	ntdll!RtlUserThreadStart [0x7ffb2154c48c+2c]
+
+2026-04-05 03:11:08,268 - INFO - No new listings to report
+2026-04-05 03:11:08,268 - INFO - Check completed
