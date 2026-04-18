@@ -229,10 +229,11 @@ def load_all_hospitals():
 @app.route('/', methods=['GET'])
 def serve_homepage():
     """Serve the main search interface"""
-    try:
-        return send_from_directory('hospital-pricing-frontend', 'index.html')
-    except:
-        return jsonify({'error': 'Homepage not found'}), 404
+    html_file = os.path.join(os.path.dirname(__file__), 'hospital-pricing-frontend', 'index.html')
+    if os.path.exists(html_file):
+        with open(html_file, 'r', encoding='utf-8') as f:
+            return f.read()
+    return '<h1>Hospital Pricing Database</h1><p>Homepage loading...</p>', 200
 
 @app.route('/health', methods=['GET'])
 def health_check():
