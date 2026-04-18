@@ -12,14 +12,14 @@ from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 from functools import lru_cache
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 # ============================================================================
 # CONFIGURATION & SETUP
 # ============================================================================
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='hospital-pricing-frontend', static_url_path='')
 CORS(app)
 
 # Logging
@@ -223,6 +223,16 @@ def load_all_hospitals():
 # ============================================================================
 # API ENDPOINTS
 # ============================================================================
+# ROUTES
+# ============================================================================
+
+@app.route('/', methods=['GET'])
+def serve_homepage():
+    """Serve the main search interface"""
+    try:
+        return send_from_directory('hospital-pricing-frontend', 'index.html')
+    except:
+        return jsonify({'error': 'Homepage not found'}), 404
 
 @app.route('/health', methods=['GET'])
 def health_check():
