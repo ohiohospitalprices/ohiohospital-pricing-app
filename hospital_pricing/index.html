@@ -88,6 +88,38 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .system-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .system-tab {
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .system-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .system-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
         .category-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -382,25 +414,52 @@
         </div>
 
         <div class="controls">
+            <!-- Hospital System Selector -->
+            <div class="control-group">
+                <label>Hospital System</label>
+                <div class="system-tabs">
+                    <button class="system-tab active" data-system="OhioHealth">OhioHealth</button>
+                    <button class="system-tab" data-system="OSU">OSU</button>
+                    <button class="system-tab" data-system="MountCarmel">Mount Carmel</button>
+                </div>
+            </div>
+
             <div class="control-group">
                 <label for="hospital-select">Select Hospital</label>
                 <select id="hospital-select" class="hospital-select">
                     <option value="">All Hospitals</option>
-                    <option value="Berger Hospital">Berger Hospital</option>
-                    <option value="Doctors Hospital">Doctors Hospital</option>
-                    <option value="Dublin Methodist Hospital">Dublin Methodist Hospital</option>
-                    <option value="Grady Memorial Hospital">Grady Memorial Hospital</option>
-                    <option value="Grant Medical Center">Grant Medical Center</option>
-                    <option value="Grove City Methodist">Grove City Methodist</option>
-                    <option value="Hardin Memorial Hospital">Hardin Memorial Hospital</option>
-                    <option value="Mansfield Hospital">Mansfield Hospital</option>
-                    <option value="Marion General Hospital">Marion General Hospital</option>
-                    <option value="O'Bleness Hospital">O'Bleness Hospital</option>
-                    <option value="Pickerington Methodist Hospital">Pickerington Methodist Hospital</option>
-                    <option value="Riverside Methodist Hospital">Riverside Methodist Hospital</option>
-                    <option value="Shelby Hospital">Shelby Hospital</option>
-                    <option value="Southeastern Medical Center">Southeastern Medical Center</option>
-                    <option value="Van Wert Hospital">Van Wert Hospital</option>
+                    <!-- OhioHealth Hospitals -->
+                    <optgroup label="OhioHealth">
+                        <option value="Berger Hospital">Berger Hospital</option>
+                        <option value="Doctors Hospital">Doctors Hospital</option>
+                        <option value="Dublin Methodist Hospital">Dublin Methodist Hospital</option>
+                        <option value="Grady Memorial Hospital">Grady Memorial Hospital</option>
+                        <option value="Grant Medical Center">Grant Medical Center</option>
+                        <option value="Grove City Methodist">Grove City Methodist</option>
+                        <option value="Hardin Memorial Hospital">Hardin Memorial Hospital</option>
+                        <option value="Mansfield Hospital">Mansfield Hospital</option>
+                        <option value="Marion General Hospital">Marion General Hospital</option>
+                        <option value="O'Bleness Hospital">O'Bleness Hospital</option>
+                        <option value="Pickerington Methodist Hospital">Pickerington Methodist Hospital</option>
+                        <option value="Riverside Methodist Hospital">Riverside Methodist Hospital</option>
+                        <option value="Shelby Hospital">Shelby Hospital</option>
+                        <option value="Southeastern Medical Center">Southeastern Medical Center</option>
+                        <option value="Van Wert Hospital">Van Wert Hospital</option>
+                    </optgroup>
+                    <!-- OSU Hospitals -->
+                    <optgroup label="OSU">
+                        <option value="OSU Wexner Medical Center">OSU Wexner Medical Center</option>
+                        <option value="Arthur G James Cancer Hospital">Arthur G James Cancer Hospital</option>
+                    </optgroup>
+                    <!-- Mount Carmel Hospitals -->
+                    <optgroup label="Mount Carmel">
+                        <option value="Mount Carmel East">Mount Carmel East</option>
+                        <option value="Mount Carmel West">Mount Carmel West</option>
+                        <option value="Mount Carmel New Albany">Mount Carmel New Albany</option>
+                        <option value="Mount Carmel Grove City">Mount Carmel Grove City</option>
+                        <option value="Mount Carmel Westerville">Mount Carmel Westerville</option>
+                        <option value="Mount Carmel Delaware">Mount Carmel Delaware</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -450,6 +509,46 @@
         let currentHospital = '';
         let currentCategory = 'Surgical';
         let currentSearch = '';
+        let currentSystem = 'OhioHealth';
+
+        // Hospital system mapping
+        const hospitalSystems = {
+            OhioHealth: [
+                'Berger Hospital', 'Doctors Hospital', 'Dublin Methodist Hospital',
+                'Grady Memorial Hospital', 'Grant Medical Center', 'Grove City Methodist',
+                'Hardin Memorial Hospital', 'Mansfield Hospital', 'Marion General Hospital',
+                "O'Bleness Hospital", 'Pickerington Methodist Hospital', 'Riverside Methodist Hospital',
+                'Shelby Hospital', 'Southeastern Medical Center', 'Van Wert Hospital'
+            ],
+            OSU: [
+                'OSU Wexner Medical Center', 'Arthur G James Cancer Hospital'
+            ],
+            MountCarmel: [
+                'Mount Carmel East', 'Mount Carmel West', 'Mount Carmel New Albany',
+                'Mount Carmel Grove City', 'Mount Carmel Westerville', 'Mount Carmel Delaware'
+            ]
+        };
+
+        // Update hospital dropdown based on selected system
+        function updateHospitalDropdown(system) {
+            const select = document.getElementById('hospital-select');
+            const hospitals = hospitalSystems[system] || [];
+            
+            // Keep "All Hospitals" option, clear the rest
+            select.innerHTML = '<option value="">All Hospitals</option>';
+            
+            // Add hospitals for selected system
+            hospitals.forEach(hospital => {
+                const option = document.createElement('option');
+                option.value = hospital;
+                option.textContent = hospital;
+                select.appendChild(option);
+            });
+            
+            // Reset hospital selection
+            currentHospital = '';
+            select.value = '';
+        }
 
         // Load procedures from JSON
         async function loadProcedures() {
@@ -581,6 +680,17 @@
         }
 
         // Event listeners
+        // System tab listeners
+        document.querySelectorAll('.system-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.system-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentSystem = tab.dataset.system;
+                updateHospitalDropdown(currentSystem);
+                updateResults();
+            });
+        });
+
         document.getElementById('hospital-select').addEventListener('change', (e) => {
             currentHospital = e.target.value;
             updateResults();
@@ -609,7 +719,10 @@
         });
 
         // Load procedures on page load
-        window.addEventListener('load', loadProcedures);
+        window.addEventListener('load', () => {
+            updateHospitalDropdown(currentSystem);
+            loadProcedures();
+        });
     </script>
 </body>
 </html>
