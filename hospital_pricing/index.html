@@ -348,21 +348,21 @@
                 <label for="hospital-select">Select Hospital</label>
                 <select id="hospital-select" class="hospital-select">
                     <option value="">All Hospitals</option>
-                    <option value="Columbus">Columbus</option>
-                    <option value="Cleveland">Cleveland</option>
-                    <option value="Dublin">Dublin</option>
-                    <option value="Grady">Grady</option>
-                    <option value="Grant">Grant</option>
-                    <option value="Grove City">Grove City</option>
-                    <option value="Hardin">Hardin</option>
-                    <option value="Mansfield">Mansfield</option>
-                    <option value="Marion">Marion</option>
-                    <option value="O'Bleness">O'Bleness</option>
-                    <option value="Pickerington">Pickerington</option>
-                    <option value="Riverside">Riverside</option>
-                    <option value="Shelby">Shelby</option>
-                    <option value="Southeastern">Southeastern</option>
-                    <option value="Van Wert">Van Wert</option>
+                    <option value="Berger Hospital">Berger Hospital</option>
+                    <option value="Doctors Hospital">Doctors Hospital</option>
+                    <option value="Dublin Methodist Hospital">Dublin Methodist Hospital</option>
+                    <option value="Grady Memorial Hospital">Grady Memorial Hospital</option>
+                    <option value="Grant Medical Center">Grant Medical Center</option>
+                    <option value="Grove City Methodist">Grove City Methodist</option>
+                    <option value="Hardin Memorial Hospital">Hardin Memorial Hospital</option>
+                    <option value="Mansfield Hospital">Mansfield Hospital</option>
+                    <option value="Marion General Hospital">Marion General Hospital</option>
+                    <option value="O'Bleness Memorial Hospital">O'Bleness Memorial Hospital</option>
+                    <option value="Pickerington Hospital">Pickerington Hospital</option>
+                    <option value="Riverside Methodist Hospital">Riverside Methodist Hospital</option>
+                    <option value="Shelby Hospital">Shelby Hospital</option>
+                    <option value="Southeastern Med Center">Southeastern Med Center</option>
+                    <option value="Van Wert Hospital">Van Wert Hospital</option>
                 </select>
             </div>
 
@@ -416,29 +416,36 @@
         // Load procedures from JSON
         async function loadProcedures() {
             try {
+                console.log('Starting to load procedures...');
                 const response = await fetch('./procedures.json');
+                console.log('Response received:', response.status);
                 allProcedures = await response.json();
+                console.log('Procedures loaded:', allProcedures.length, 'records');
+                console.log('First procedure:', allProcedures[0]);
                 updateResults();
                 updateResultCount();
             } catch (error) {
                 console.error('Error loading procedures:', error);
                 document.getElementById('procedures-container').innerHTML = 
-                    '<div class="no-results"><h3>Error loading data</h3></div>';
+                    '<div class="no-results"><h3>Error loading data</h3><p>' + error.message + '</p></div>';
             }
         }
 
         // Filter and display procedures
         function updateResults() {
+            console.log('updateResults called. allProcedures:', allProcedures.length, 'currentHospital:', currentHospital, 'currentCategory:', currentCategory);
             let filtered = allProcedures;
 
             // Filter by hospital
             if (currentHospital) {
                 filtered = filtered.filter(p => p.hospital === currentHospital);
+                console.log('After hospital filter:', filtered.length);
             }
 
             // Filter by category
             if (currentCategory) {
                 filtered = filtered.filter(p => p.category === currentCategory);
+                console.log('After category filter:', filtered.length);
             }
 
             // Filter by search
@@ -448,10 +455,12 @@
                     p.procedure.toLowerCase().includes(searchLower) ||
                     p.cpt.includes(currentSearch)
                 );
+                console.log('After search filter:', filtered.length);
             }
 
             // Sort by procedure name
             filtered.sort((a, b) => a.procedure.localeCompare(b.procedure));
+            console.log('Final filtered count:', filtered.length);
 
             // Display results
             const container = document.getElementById('procedures-container');
