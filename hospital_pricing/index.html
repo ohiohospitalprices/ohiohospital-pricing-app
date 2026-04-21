@@ -471,7 +471,7 @@
                     <div class="procedure-item" onclick="openModal('${procedure.procedure}', '${procedure.cpt}')">
                         <div class="procedure-header">
                             <span class="procedure-name">${procedure.procedure}</span>
-                            <span class="procedure-price">$${procedure.price.toLocaleString()}</span>
+                            <span class="procedure-price">$${procedure.price ? procedure.price.toLocaleString() : 'N/A'}</span>
                         </div>
                         <div class="procedure-details">
                             <div class="procedure-cpt">
@@ -523,11 +523,16 @@
             const prices = allProcedures.filter(p => p.cpt === cptCode && p.procedure === procedureName);
             
             const hospitalsHtml = prices
-                .sort((a, b) => a.price - b.price)
+                .sort((a, b) => {
+                    // Handle null prices - put them at the end
+                    if (a.price === null || a.price === undefined) return 1;
+                    if (b.price === null || b.price === undefined) return -1;
+                    return a.price - b.price;
+                })
                 .map(p => `
                     <div class="hospital-price${currentHospital === p.hospital ? ' current' : ''}">
                         <span class="hospital-name">${p.hospital}</span>
-                        <span class="hospital-price-amount">$${p.price.toLocaleString()}</span>
+                        <span class="hospital-price-amount">$${p.price ? p.price.toLocaleString() : 'N/A'}</span>
                     </div>
                 `).join('');
 
