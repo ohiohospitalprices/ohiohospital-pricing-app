@@ -1,14 +1,10 @@
 services:
   - type: web
-    name: hospital-pricing-api
-    env: python
-    plan: starter
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --worker-class sync --timeout 120"
+    name: ohiohealth-pricing
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
-      - key: FLASK_ENV
+      - key: NODE_ENV
         value: production
-      - key: DATABASE_PATH
-        value: /tmp/hospital_pricing.db
-      - key: DATA_DIR
-        value: /app/hospital_data
