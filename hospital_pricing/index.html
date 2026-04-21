@@ -369,8 +369,7 @@
             <div class="control-group">
                 <label>Procedure Category</label>
                 <div class="category-buttons">
-                    <button class="category-btn active" data-category="">All Categories</button>
-                    <button class="category-btn" data-category="Surgical">Surgical</button>
+                    <button class="category-btn active" data-category="Surgical">Surgical</button>
                     <button class="category-btn" data-category="Imaging">Imaging</button>
                     <button class="category-btn" data-category="Lab">Lab</button>
                     <button class="category-btn" data-category="Pharmacy">Pharmacy</button>
@@ -378,6 +377,7 @@
                     <button class="category-btn" data-category="Therapy">Therapy</button>
                     <button class="category-btn" data-category="Room">Room</button>
                     <button class="category-btn" data-category="Other">Other</button>
+                    <button class="category-btn" data-category="">All Categories</button>
                 </div>
             </div>
 
@@ -410,7 +410,7 @@
     <script>
         let allProcedures = [];
         let currentHospital = '';
-        let currentCategory = '';
+        let currentCategory = 'Surgical';
         let currentSearch = '';
 
         // Load procedures from JSON
