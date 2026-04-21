@@ -37,6 +37,17 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .ohio-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .header p {
@@ -339,7 +350,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏥 OhioHealth Hospital Pricing</h1>
+            <h1>
+                <svg class="ohio-icon" viewBox="0 0 100 100" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 30 20 L 50 15 L 65 20 L 70 35 L 68 50 L 72 65 L 65 75 L 50 80 L 35 75 L 28 65 L 25 50 L 22 35 Z" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+                OhioHealth Hospital Pricing
+            </h1>
             <p>Compare procedure costs across OhioHealth facilities</p>
             <p style="font-size: 0.85rem; color: #999; font-style: italic; margin-top: 12px; line-height: 1.4;">
                 Disclaimer: Pricing data from official hospital transparency files. Not a guarantee of actual cost. For accurate pricing, contact the hospital directly.
