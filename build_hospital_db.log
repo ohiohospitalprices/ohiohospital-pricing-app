@@ -1,0 +1,118 @@
+2026-04-17 23:03:53,508 - INFO - 
+================================================================================
+2026-04-17 23:03:53,508 - INFO - HOSPITAL PRICING DATABASE BUILDER
+2026-04-17 23:03:53,508 - INFO - ================================================================================
+2026-04-17 23:03:53,508 - INFO - Creating database schema...
+2026-04-17 23:03:53,524 - INFO - \u2713 Database schema created
+2026-04-17 23:03:53,526 - INFO - Fetching Berger Hospital... (json)
+2026-04-17 23:03:54,180 - INFO -   \u2713 Parsed 0 procedures from Berger Hospital
+2026-04-17 23:03:54,217 - WARNING -   \u2717 No procedures found for Berger Hospital
+2026-04-17 23:03:54,722 - INFO - Fetching Doctors Hospital... (json)
+2026-04-17 23:03:55,624 - INFO -   \u2713 Parsed 0 procedures from Doctors Hospital
+2026-04-17 23:03:55,656 - WARNING -   \u2717 No procedures found for Doctors Hospital
+2026-04-17 23:03:56,172 - INFO - Fetching Dublin Methodist Hospital... (json)
+2026-04-17 23:03:56,829 - INFO -   \u2713 Parsed 0 procedures from Dublin Methodist Hospital
+2026-04-17 23:03:56,868 - WARNING -   \u2717 No procedures found for Dublin Methodist Hospital
+2026-04-17 23:03:57,371 - INFO - Fetching Grady Memorial Hospital... (json)
+2026-04-17 23:03:57,919 - INFO -   \u2713 Parsed 0 procedures from Grady Memorial Hospital
+2026-04-17 23:03:57,945 - WARNING -   \u2717 No procedures found for Grady Memorial Hospital
+2026-04-17 23:03:58,459 - INFO - Fetching Grant Medical Center... (json)
+2026-04-17 23:03:59,269 - INFO -   \u2713 Parsed 0 procedures from Grant Medical Center
+2026-04-17 23:03:59,301 - WARNING -   \u2717 No procedures found for Grant Medical Center
+2026-04-17 23:03:59,815 - INFO - Fetching Grove City Methodist... (json)
+2026-04-17 23:04:00,475 - INFO -   \u2713 Parsed 0 procedures from Grove City Methodist
+2026-04-17 23:04:00,505 - WARNING -   \u2717 No procedures found for Grove City Methodist
+2026-04-17 23:04:01,013 - INFO - Fetching Hardin Memorial Hospital... (json)
+2026-04-17 23:04:01,595 - INFO -   \u2713 Parsed 0 procedures from Hardin Memorial Hospital
+2026-04-17 23:04:01,605 - WARNING -   \u2717 No procedures found for Hardin Memorial Hospital
+2026-04-17 23:04:02,115 - INFO - Fetching Mansfield Hospital... (json)
+2026-04-17 23:04:03,222 - INFO -   \u2713 Parsed 0 procedures from Mansfield Hospital
+2026-04-17 23:04:03,245 - WARNING -   \u2717 No procedures found for Mansfield Hospital
+2026-04-17 23:04:03,758 - INFO - Fetching Marion General Hospital... (json)
+2026-04-17 23:04:04,313 - INFO -   \u2713 Parsed 0 procedures from Marion General Hospital
+2026-04-17 23:04:04,342 - WARNING -   \u2717 No procedures found for Marion General Hospital
+2026-04-17 23:04:04,848 - INFO - Fetching Morrow County Hospital... (csv)
+2026-04-17 23:04:07,185 - INFO -   \u2713 Parsed 129137 procedures from Morrow County Hospital
+2026-04-17 23:04:07,227 - INFO -   \u2713 Inserted 0 procedures
+2026-04-17 23:04:07,741 - INFO - Fetching O'Bleness Hospital... (json)
+2026-04-17 23:04:08,592 - INFO -   \u2713 Parsed 0 procedures from O'Bleness Hospital
+2026-04-17 23:04:08,686 - WARNING -   \u2717 No procedures found for O'Bleness Hospital
+2026-04-17 23:04:09,199 - INFO - Fetching Pickerington Methodist Hospital... (json)
+2026-04-17 23:04:09,984 - INFO -   \u2713 Parsed 0 procedures from Pickerington Methodist Hospital
+2026-04-17 23:04:10,017 - WARNING -   \u2717 No procedures found for Pickerington Methodist Hospital
+2026-04-17 23:04:10,528 - INFO - Fetching Riverside Methodist Hospital... (json)
+2026-04-17 23:04:11,420 - INFO -   \u2713 Parsed 0 procedures from Riverside Methodist Hospital
+2026-04-17 23:04:11,454 - WARNING -   \u2717 No procedures found for Riverside Methodist Hospital
+2026-04-17 23:04:11,966 - INFO - Fetching Shelby Hospital... (json)
+2026-04-17 23:04:12,391 - INFO -   \u2713 Parsed 0 procedures from Shelby Hospital
+2026-04-17 23:04:12,400 - WARNING -   \u2717 No procedures found for Shelby Hospital
+2026-04-17 23:04:12,911 - INFO - Fetching Southeastern Medical Center... (json)
+2026-04-17 23:04:13,488 - INFO -   \u2713 Parsed 0 procedures from Southeastern Medical Center
+2026-04-17 23:04:13,508 - WARNING -   \u2717 No procedures found for Southeastern Medical Center
+2026-04-17 23:04:14,013 - INFO - Fetching Van Wert Hospital... (json)
+2026-04-17 23:04:14,780 - INFO -   \u2713 Parsed 0 procedures from Van Wert Hospital
+2026-04-17 23:04:14,800 - WARNING -   \u2717 No procedures found for Van Wert Hospital
+2026-04-17 23:04:15,302 - INFO - Fetching Ohio State University Medical Center... (csv_zip)
+2026-04-17 23:05:00,148 - INFO -   \u2713 Parsed 2353062 procedures from Ohio State University Medical Center (ZIP)
+2026-04-17 23:05:01,479 - INFO -   \u2713 Inserted 0 procedures
+2026-04-17 23:05:01,981 - ERROR - Failed to process James Cancer Hospital: table hospitals has no column named url
+2026-04-17 23:05:01,981 - ERROR - Failed to process Mount Carmel East: table hospitals has no column named url
+2026-04-17 23:05:01,981 - ERROR - Failed to process Mount Carmel Grove City: table hospitals has no column named url
+2026-04-17 23:05:01,981 - ERROR - Failed to process Mount Carmel New Albany: table hospitals has no column named url
+2026-04-17 23:05:01,981 - ERROR - Failed to process Mount Carmel St. Ann's: table hospitals has no column named url
+2026-04-17 23:05:01,981 - ERROR - Failed to process Mount Carmel Dublin: table hospitals has no column named url
+2026-04-17 23:05:01,982 - INFO - 
+================================================================================
+2026-04-17 23:05:01,982 - INFO - DATABASE BUILD COMPLETE
+2026-04-17 23:05:01,982 - INFO - ================================================================================
+2026-04-17 23:05:01,982 - INFO - Elapsed Time: 68.5s
+2026-04-17 23:05:01,982 - INFO - 
+Hospitals: 23
+2026-04-17 23:05:01,982 - INFO - Procedures: 10
+2026-04-17 23:05:01,982 - INFO - Pricing Records: 230
+2026-04-17 23:05:01,982 - INFO - 
+Database: C:\Users\Owner\.openclaw\workspace-openclaw-ai\hospital_pricing.db
+2026-04-17 23:05:01,982 - INFO - Size: 0.1 MB
+2026-04-17 23:05:01,982 - WARNING - 
+Errors: 6
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process James Cancer Hospital: table hospitals has no column named url
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process Mount Carmel East: table hospitals has no column named url
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process Mount Carmel Grove City: table hospitals has no column named url
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process Mount Carmel New Albany: table hospitals has no column named url
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process Mount Carmel St. Ann's: table hospitals has no column named url
+2026-04-17 23:05:01,982 - WARNING -   - Failed to process Mount Carmel Dublin: table hospitals has no column named url
+2026-04-17 23:05:01,982 - INFO - ================================================================================
+
+2026-04-17 23:05:01,983 - INFO - \u2713 Documentation saved: C:\Users\Owner\.openclaw\workspace-openclaw-ai\HOSPITAL_DB_SCHEMA.md
+2026-04-17 23:06:04,228 - INFO - 
+================================================================================
+2026-04-17 23:06:04,228 - INFO - HOSPITAL PRICING DATABASE BUILDER v2
+2026-04-17 23:06:04,228 - INFO - ================================================================================
+2026-04-17 23:06:04,228 - INFO - Creating database schema...
+2026-04-17 23:06:04,244 - INFO - \u2713 Database schema created
+2026-04-17 23:06:04,248 - INFO - Fetching Berger Hospital... (json)
+2026-04-17 23:06:05,177 - INFO -   \u2713 Parsed 26163 procedures from Berger Hospital
+2026-04-17 23:07:32,844 - INFO -   \u2713 Inserted 26163 procedures, 6442 pricing records
+2026-04-17 23:07:33,866 - INFO - Fetching Doctors Hospital... (json)
+2026-04-17 23:07:34,754 - INFO -   \u2713 Parsed 20672 procedures from Doctors Hospital
+2026-04-17 23:08:50,199 - INFO -   \u2713 Inserted 20672 procedures, 7675 pricing records
+2026-04-17 23:08:51,222 - INFO - Fetching Dublin Methodist Hospital... (json)
+2026-04-17 23:08:52,327 - INFO -   \u2713 Parsed 20160 procedures from Dublin Methodist Hospital
+2026-04-17 23:10:05,317 - INFO -   \u2713 Inserted 20160 procedures, 7355 pricing records
+2026-04-17 23:10:06,326 - INFO - Fetching Grady Memorial Hospital... (json)
+2026-04-17 23:10:07,248 - INFO -   \u2713 Parsed 15921 procedures from Grady Memorial Hospital
+2026-04-17 23:11:04,423 - INFO -   \u2713 Inserted 15921 procedures, 5955 pricing records
+2026-04-17 23:11:05,438 - INFO - Fetching Grant Medical Center... (json)
+2026-04-17 23:11:06,275 - INFO -   \u2713 Parsed 21452 procedures from Grant Medical Center
+2026-04-17 23:12:24,653 - INFO -   \u2713 Inserted 21452 procedures, 8149 pricing records
+2026-04-17 23:12:25,668 - INFO - Fetching Grove City Methodist... (json)
+2026-04-17 23:12:26,417 - INFO -   \u2713 Parsed 20672 procedures from Grove City Methodist
+2026-04-17 23:13:41,589 - INFO -   \u2713 Inserted 20672 procedures, 7675 pricing records
+2026-04-17 23:13:42,603 - INFO - Fetching Hardin Memorial Hospital... (json)
+2026-04-17 23:13:43,206 - INFO -   \u2713 Parsed 7411 procedures from Hardin Memorial Hospital
+2026-04-17 23:14:16,225 - INFO -   \u2713 Inserted 7411 procedures, 5043 pricing records
+2026-04-17 23:14:17,232 - INFO - Fetching Mansfield Hospital... (json)
+2026-04-17 23:14:17,992 - INFO -   \u2713 Parsed 18166 procedures from Mansfield Hospital
+2026-04-17 23:15:26,695 - INFO -   \u2713 Inserted 18166 procedures, 7272 pricing records
+2026-04-17 23:15:27,706 - INFO - Fetching Marion General Hospital... (json)
+2026-04-17 23:15:28,333 - INFO -   \u2713 Parsed 18673 procedures from Marion General Hospital

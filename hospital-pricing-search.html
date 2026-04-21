@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Procedure Pricing Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* SIDEBAR FILTERS */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 28px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-reset {
+            font-size: 0.75rem;
+            color: #3498db;
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 500;
+            padding: 0;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+
+        .filter-reset:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .filter-list {
+            list-style: none;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            margin-bottom: 6px;
+        }
+
+        .filter-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: #3498db;
+            flex-shrink: 0;
+        }
+
+        .filter-item label {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-count {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        .a-z-index {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
+            gap: 4px;
+        }
+
+        .a-z-btn {
+            padding: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #ddd;
+            background: white;
+            color: #3498db;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .a-z-btn:hover {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .a-z-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* SEARCH BOX */
+        .search-container {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #95a5a6;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.highlighted {
+            background-color: #f5f7fa;
+        }
+
+        .suggestion-item strong {
+            color: #3498db;
+        }
+
+        .search-help {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .help-examples {
+            margin-top: 8px;
+        }
+
+        .help-examples strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #2c3e50;
+        }
+
+        .help-text {
+            display: inline;
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-right: 12px;
+            font-size: 0.8rem;
+        }
+
+        .help-text:hover {
+            color: #2980b9;
+        }
+
+        /* RESULTS */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .results-count {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sort-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .sort-btn:hover {
+            border-color: #3498db;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #3498db;
+        }
+
+        .result-card.focused {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        .result-code {
+            display: inline-block;
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 8px;
+        }
+
+        .result-category {
+            display: inline-block;
+            background: #d4e6f1;
+            color: #1a5276;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 12px 0 8px 0;
+            line-height: 1.3;
+        }
+
+        .result-description {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .result-body-part {
+            font-size: 0.8rem;
+            color: #e74c3c;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .synonyms-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .synonyms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .synonym-tag {
+            background: #f0f0f0;
+            color: #555;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        /* KEYBOARD NAV INDICATOR */
+        .keyboard-hint {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* SCROLL BAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+
+        /* LOADING STATE */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #3498db;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ACCESSIBILITY */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        button:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        a:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hospital Procedure Pricing</h1>
+            <p>Search, browse, and filter medical procedures</p>
+        </header>
+
+        <div class="main-content">
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="complementary" aria-label="Filters">
+                <!-- Category Filters -->
+                <div class="filter-section">
+                    <div class="filter-title">
+                        <span>Category</span>
+                        <button class="filter-reset" id="resetCategoryBtn" aria-label="Reset category filters">Reset</button>
+                    </div>
+                    <ul class="filter-list" id="categoryList" role="group" aria-label="Category filters"></ul>
+                </div>
+
+                <!-- Body Part Filters -->
+                <div class="filter-section">
+                    <div class="filter-title">
+                        <span>Body Part</span>
+                        <button class="filter-reset" id="resetBodyPartBtn" aria-label="Reset body part filters">Reset</button>
+                    </div>
+                    <ul class="filter-list" id="bodyPartList" role="group" aria-label="Body part filters"></ul>
+                </div>
+
+                <!-- A-Z Index -->
+                <div class="filter-section">
+                    <div class="filter-title">Browse A-Z</div>
+                    <div class="a-z-index" id="azIndex" role="group" aria-label="Alphabetical browse index"></div>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <section class="content" role="main">
+                <!-- Search Box -->
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <label for="searchInput" class="sr-only">Search procedures</label>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="search-input"
+                            placeholder="Search procedures, codes, or descriptions..."
+                            autocomplete="off"
+                            aria-label="Search procedures by name, code, or description"
+                            aria-describedby="searchHelp"
+                        >
+                        <div class="search-suggestions" id="suggestions" role="listbox" aria-label="Search suggestions"></div>
+                    </div>
+                    <div id="searchHelp" class="search-help">
+                        <div class="help-examples">
+                            <strong>Try searching:</strong>
+                            <span class="help-text" data-query="cardiac bypass">Cardiac Bypass</span>
+                            <span class="help-text" data-query="MRI">MRI Scan</span>
+                            <span class="help-text" data-query="blood test">Blood Test</span>
+                            <span class="help-text" data-query="knee replacement">Knee Replacement</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-header">
+                    <span class="results-count" aria-live="polite" aria-atomic="true" id="resultsCount"></span>
+                    <div class="sort-controls" role="group" aria-label="Sort options">
+                        <button class="sort-btn active" data-sort="relevance" aria-label="Sort by relevance">
+                            Relevance
+                        </button>
+                        <button class="sort-btn" data-sort="name" aria-label="Sort by procedure name">
+                            Name (A-Z)
+                        </button>
+                        <button class="sort-btn" data-sort="code" aria-label="Sort by procedure code">
+                            Code
+                        </button>
+                    </div>
+                </div>
+
+                <div id="results" class="results-grid" role="region" aria-label="Search results" aria-live="polite" aria-atomic="false">
+                    <!-- Results populated by JS -->
+                </div>
+
+                <div class="keyboard-hint">
+                    💡 <strong>Keyboard navigation:</strong> Use ↑↓ arrows to navigate results, Enter to select, Esc to close suggestions
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // SAMPLE DATA - Hospital Procedures
+        // ============================================================================
+
+        const procedureData = [
+            // Surgical Procedures
+            { id: 1, name: 'Cardiac Bypass Surgery', code: '33510', category: 'Surgical', bodyPart: 'Heart', description: 'Coronary artery bypass graft with multiple grafts', synonyms: ['CABG', 'Heart bypass'] },
+            { id: 2, name: 'Knee Replacement', code: '27447', category: 'Surgical', bodyPart: 'Knee', description: 'Total knee replacement (primary)', synonyms: ['TKR', 'Total knee arthroplasty'] },
+            { id: 3, name: 'Hip Replacement', code: '27130', category: 'Surgical', bodyPart: 'Hip', description: 'Primary total hip replacement', synonyms: ['THR', 'Total hip arthroplasty'] },
+            { id: 4, name: 'Appendectomy', code: '44950', category: 'Surgical', bodyPart: 'Abdomen', description: 'Laparoscopic appendectomy', synonyms: ['Appendix removal'] },
+            { id: 5, name: 'Brain Tumor Resection', code: '61500', category: 'Surgical', bodyPart: 'Brain', description: 'Surgical removal of brain neoplasm', synonyms: ['Craniotomy', 'Brain surgery'] },
+            { id: 6, name: 'Cataract Surgery', code: '66984', category: 'Surgical', bodyPart: 'Eye', description: 'Phacoemulsification with intraocular lens implant', synonyms: ['Cataract removal'] },
+            { id: 7, name: 'Gallbladder Removal', code: '47600', category: 'Surgical', bodyPart: 'Abdomen', description: 'Laparoscopic cholecystectomy', synonyms: ['Cholecystectomy'] },
+            { id: 8, name: 'Hernia Repair', code: '49505', category: 'Surgical', bodyPart: 'Abdomen', description: 'Inguinal hernia repair, open or laparoscopic', synonyms: ['Hernia fix'] },
+            { id: 9, name: 'Shoulder Surgery', code: '23410', category: 'Surgical', bodyPart: 'Shoulder', description: 'Rotator cuff repair', synonyms: ['Rotator cuff repair'] },
+            { id: 10, name: 'Valve Replacement', code: '33410', category: 'Surgical', bodyPart: 'Heart', description: 'Aortic valve replacement with cardiopulmonary bypass', synonyms: ['Heart valve surgery'] },
+
+            // Lab Tests
+            { id: 11, name: 'Complete Blood Count', code: '85025', category: 'Lab', bodyPart: 'Blood', description: 'CBC with differential', synonyms: ['CBC', 'Blood count'] },
+            { id: 12, name: 'Comprehensive Metabolic Panel', code: '80053', category: 'Lab', bodyPart: 'Blood', description: 'Full metabolic panel with glucose, electrolytes, kidney and liver function', synonyms: ['CMP', 'Metabolic panel'] },
+            { id: 13, name: 'Lipid Panel', code: '80061', category: 'Lab', bodyPart: 'Blood', description: 'Cholesterol and triglyceride levels', synonyms: ['Cholesterol panel'] },
+            { id: 14, name: 'Thyroid Panel', code: '84443', category: 'Lab', bodyPart: 'Endocrine', description: 'TSH, free T3, free T4', synonyms: ['Thyroid function tests', 'TFT'] },
+            { id: 15, name: 'Blood Glucose Test', code: '82947', category: 'Lab', bodyPart: 'Blood', description: 'Fasting and non-fasting glucose levels', synonyms: ['Glucose test', 'Blood sugar'] },
+            { id: 16, name: 'Liver Function Tests', code: '80076', category: 'Lab', bodyPart: 'Abdomen', description: 'AST, ALT, alkaline phosphatase, bilirubin', synonyms: ['LFTs'] },
+            { id: 17, name: 'Kidney Function Tests', code: '80069', category: 'Lab', bodyPart: 'Kidney', description: 'Creatinine, BUN, eGFR', synonyms: ['Renal function', 'Renal panel'] },
+            { id: 18, name: 'Urinalysis', code: '81000', category: 'Lab', bodyPart: 'Urinary', description: 'Complete urinalysis with microscopy', synonyms: ['Urine test'] },
+            { id: 19, name: 'Coagulation Panel', code: '80050', category: 'Lab', bodyPart: 'Blood', description: 'PT, INR, PTT, fibrinogen', synonyms: ['Clotting studies'] },
+            { id: 20, name: 'Pregnancy Test', code: '84703', category: 'Lab', bodyPart: 'Reproductive', description: 'Quantitative beta-hCG', synonyms: ['HCG test', 'Pregnancy hormone'] },
+
+            // Imaging
+            { id: 21, name: 'MRI Brain', code: '70553', category: 'Imaging', bodyPart: 'Brain', description: 'Magnetic resonance imaging of brain without contrast', synonyms: ['Brain MRI'] },
+            { id: 22, name: 'CT Chest', code: '71020', category: 'Imaging', bodyPart: 'Chest', description: 'Computed tomography of thorax with contrast', synonyms: ['Chest CT', 'CT scan chest'] },
+            { id: 23, name: 'X-Ray Chest', code: '71020', category: 'Imaging', bodyPart: 'Chest', description: 'Chest X-ray, 2 views', synonyms: ['Chest radiograph', 'CXR'] },
+            { id: 24, name: 'Abdominal Ultrasound', code: '76700', category: 'Imaging', bodyPart: 'Abdomen', description: 'Ultrasound of abdomen, complete', synonyms: ['Abdominal ultrasound', 'Belly ultrasound'] },
+            { id: 25, name: 'Mammogram', code: '77065', category: 'Imaging', bodyPart: 'Breast', description: 'Bilateral mammography, screening', synonyms: ['Breast mammogram'] },
+            { id: 26, name: 'MRI Knee', code: '73610', category: 'Imaging', bodyPart: 'Knee', description: 'MRI of knee without contrast', synonyms: ['Knee MRI'] },
+            { id: 27, name: 'Colonoscopy', code: '45398', category: 'Imaging', bodyPart: 'Colon', description: 'Colonoscopy with biopsy', synonyms: ['Colon scope', 'Colonoscopy with biopsy'] },
+            { id: 28, name: 'Echocardiogram', code: '93000', category: 'Imaging', bodyPart: 'Heart', description: 'Transthoracic echocardiography, complete study', synonyms: ['Echo', 'Cardiac echo'] },
+            { id: 29, name: 'Carotid Ultrasound', code: '93880', category: 'Imaging', bodyPart: 'Neck', description: 'Ultrasound of carotid arteries', synonyms: ['Carotid scan'] },
+            { id: 30, name: 'PET Scan', code: '78815', category: 'Imaging', bodyPart: 'Whole body', description: 'Positron emission tomography, whole body', synonyms: ['PET imaging'] },
+
+            // ER Services
+            { id: 31, name: 'ER Visit - Minor', code: '99281', category: 'ER', bodyPart: 'Whole body', description: 'Emergency department visit for minor injury/illness', synonyms: ['ER visit minor', 'ED visit'] },
+            { id: 32, name: 'ER Visit - Moderate', code: '99282', category: 'ER', bodyPart: 'Whole body', description: 'Emergency department visit for moderate condition', synonyms: ['ER visit moderate'] },
+            { id: 33, name: 'ER Visit - Severe', code: '99285', category: 'ER', bodyPart: 'Whole body', description: 'Emergency department visit for severe condition', synonyms: ['ER visit severe', 'Critical care'] },
+            { id: 34, name: 'Trauma Activation', code: '99291', category: 'ER', bodyPart: 'Whole body', description: 'Critical care for trauma patient', synonyms: ['Trauma code', 'Trauma activation'] },
+            { id: 35, name: 'Suture Removal', code: '99070', category: 'ER', bodyPart: 'Skin', description: 'Removal of sutures', synonyms: ['Stitch removal'] },
+            { id: 36, name: 'Wound Care', code: '99213', category: 'ER', bodyPart: 'Skin', description: 'Emergency wound care and cleaning', synonyms: ['Wound treatment'] },
+            { id: 37, name: 'Fracture Reduction', code: '99291', category: 'ER', bodyPart: 'Bone', description: 'Reduction of fracture in ED', synonyms: ['Fracture fix', 'Bone reduction'] },
+            { id: 38, name: 'Laceration Repair', code: '12001', category: 'ER', bodyPart: 'Skin', description: 'Simple laceration repair', synonyms: ['Cut repair', 'Stitches'] },
+
+            // Pharmacy
+            { id: 39, name: 'IV Medication Administration', code: '96360', category: 'Pharmacy', bodyPart: 'Whole body', description: 'Initial intravenous infusion', synonyms: ['IV therapy', 'IV meds'] },
+            { id: 40, name: 'Chemotherapy Administration', code: '96413', category: 'Pharmacy', bodyPart: 'Whole body', description: 'Chemotherapy infusion', synonyms: ['Chemo'] },
+            { id: 41, name: 'Blood Transfusion', code: '36430', category: 'Pharmacy', bodyPart: 'Blood', description: 'Blood or blood component transfusion', synonyms: ['Blood infusion', 'Transfusion'] },
+            { id: 42, name: 'Antibiotic Injection', code: '96360', category: 'Pharmacy', bodyPart: 'Whole body', description: 'IV antibiotic administration', synonyms: ['IV antibiotics'] },
+            { id: 43, name: 'Pain Management', code: '96360', category: 'Pharmacy', bodyPart: 'Whole body', description: 'IV pain medication administration', synonyms: ['Pain relief'] },
+
+            // Therapy
+            { id: 44, name: 'Physical Therapy Session', code: '97161', category: 'Therapy', bodyPart: 'Whole body', description: 'PT evaluation and treatment', synonyms: ['PT', 'Physical rehabilitation'] },
+            { id: 45, name: 'Occupational Therapy', code: '97165', category: 'Therapy', bodyPart: 'Whole body', description: 'OT evaluation and treatment', synonyms: ['OT', 'Occupational therapy'] },
+            { id: 46, name: 'Speech Therapy', code: '92507', category: 'Therapy', bodyPart: 'Head', description: 'Speech-language pathology treatment', synonyms: ['Speech therapy', 'Speech treatment'] },
+            { id: 47, name: 'Respiratory Therapy', code: '94003', category: 'Therapy', bodyPart: 'Lung', description: 'Pulmonary function testing and treatment', synonyms: ['Respiratory care', 'Breathing therapy'] },
+            { id: 48, name: 'Mental Health Counseling', code: '90834', category: 'Therapy', bodyPart: 'Brain', description: 'Individual psychotherapy session', synonyms: ['Counseling', 'Mental health therapy'] },
+
+            // Hospital Room/Services
+            { id: 49, name: 'Hospital Room - Standard', code: '99217', category: 'Room', bodyPart: 'Whole body', description: 'Standard hospital room per day', synonyms: ['Hospital bed', 'Room and board'] },
+            { id: 50, name: 'Hospital Room - ICU', code: '99291', category: 'Room', bodyPart: 'Whole body', description: 'Intensive care unit room per day', synonyms: ['ICU bed', 'Critical care room'] },
+            { id: 51, name: 'Operating Room', code: '15003', category: 'Room', bodyPart: 'Whole body', description: 'Operating room facility fee', synonyms: ['OR fee', 'Surgical suite'] },
+            { id: 52, name: 'Recovery Room', code: '36515', category: 'Room', bodyPart: 'Whole body', description: 'Post-operative recovery room', synonyms: ['PACU', 'Recovery area'] },
+
+            // Other Services
+            { id: 53, name: 'Consultation', code: '99213', category: 'Other', bodyPart: 'Whole body', description: 'Specialist consultation', synonyms: ['Doctor visit', 'Medical consultation'] },
+            { id: 54, name: 'Telehealth Visit', code: '99457', category: 'Other', bodyPart: 'Whole body', description: 'Remote video consultation', synonyms: ['Virtual visit', 'Telemedicine'] },
+            { id: 55, name: 'Home Health Care', code: '99510', category: 'Other', bodyPart: 'Whole body', description: 'Home health nursing visit', synonyms: ['Home care', 'In-home care'] },
+            { id: 56, name: 'Palliative Care Consult', code: '99213', category: 'Other', bodyPart: 'Whole body', description: 'Palliative care consultation', synonyms: ['End-of-life care', 'Comfort care'] },
+        ];
+
+        // ============================================================================
+        // APP STATE & UTILITIES
+        // ============================================================================
+
+        let state = {
+            allProcedures: procedureData,
+            filteredProcedures: procedureData,
+            selectedCategories: [],
+            selectedBodyParts: [],
+            searchQuery: '',
+            currentSort: 'relevance',
+            suggestionsOpen: false,
+            highlightedSuggestionIndex: -1,
+            highlightedResultIndex: -1,
+            browseStartingLetter: null
+        };
+
+        // Debounce utility
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // ============================================================================
+        // FILTER LOGIC
+        // ============================================================================
+
+        function getUniqueCategoriesWithCounts() {
+            const categories = {};
+            state.allProcedures.forEach(proc => {
+                if (!categories[proc.category]) {
+                    categories[proc.category] = 0;
+                }
+                categories[proc.category]++;
+            });
+            return Object.entries(categories).sort(([a], [b]) => a.localeCompare(b));
+        }
+
+        function getUniqueBodyPartsWithCounts() {
+            const bodyParts = {};
+            state.allProcedures.forEach(proc => {
+                if (!bodyParts[proc.bodyPart]) {
+                    bodyParts[proc.bodyPart] = 0;
+                }
+                bodyParts[proc.bodyPart]++;
+            });
+            return Object.entries(bodyParts).sort(([a], [b]) => a.localeCompare(b));
+        }
+
+        function applyFilters() {
+            state.filteredProcedures = state.allProcedures.filter(proc => {
+                const categoryMatch = state.selectedCategories.length === 0 || state.selectedCategories.includes(proc.category);
+                const bodyPartMatch = state.selectedBodyParts.length === 0 || state.selectedBodyParts.includes(proc.bodyPart);
+                const searchMatch = filterBySearch(proc);
+                const letterMatch = state.browseStartingLetter === null || proc.name.toUpperCase().startsWith(state.browseStartingLetter);
+
+                return categoryMatch && bodyPartMatch && searchMatch && letterMatch;
+            });
+
+            applySort();
+            renderResults();
+        }
+
+        function filterBySearch(proc) {
+            if (!state.searchQuery) return true;
+
+            const query = state.searchQuery.toLowerCase();
+            return (
+                proc.name.toLowerCase().includes(query) ||
+                proc.code.toLowerCase().includes(query) ||
+                proc.description.toLowerCase().includes(query) ||
+                proc.synonyms.some(syn => syn.toLowerCase().includes(query))
+            );
+        }
+
+        // ============================================================================
+        // SEARCH & SUGGESTIONS
+        // ============================================================================
+
+        function generateSuggestions() {
+            const query = state.searchQuery.toLowerCase();
+            if (!query) return [];
+
+            const matches = state.filteredProcedures
+                .filter(proc => filterBySearch(proc))
+                .slice(0, 15)
+                .map(proc => ({
+                    id: proc.id,
+                    name: proc.name,
+                    code: proc.code,
+                    category: proc.category
+                }));
+
+            return matches;
+        }
+
+        function renderSuggestions() {
+            const suggestionsEl = document.getElementById('suggestions');
+            const suggestions = generateSuggestions();
+
+            if (suggestions.length === 0 || !state.searchQuery) {
+                suggestionsEl.classList.remove('active');
+                state.suggestionsOpen = false;
+                return;
+            }
+
+            suggestionsEl.classList.add('active');
+            state.suggestionsOpen = true;
+            state.highlightedSuggestionIndex = -1;
+
+            suggestionsEl.innerHTML = suggestions.map((sug, index) => `
+                <div class="suggestion-item" data-id="${sug.id}" role="option">
+                    <div><strong>${highlightQuery(sug.name)}</strong> <span style="color: #95a5a6;">(${sug.code})</span></div>
+                    <div style="font-size: 0.8rem; color: #7f8c8d;">${sug.category}</div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            suggestionsEl.querySelectorAll('.suggestion-item').forEach(el => {
+                el.addEventListener('click', () => selectSuggestion(parseInt(el.dataset.id)));
+            });
+        }
+
+        function highlightQuery(text) {
+            const query = state.searchQuery;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<strong>$1</strong>');
+        }
+
+        function selectSuggestion(id) {
+            const proc = state.allProcedures.find(p => p.id === id);
+            if (proc) {
+                state.searchQuery = proc.name;
+                document.getElementById('searchInput').value = proc.name;
+                applyFilters();
+                closeSuggestions();
+            }
+        }
+
+        function closeSuggestions() {
+            document.getElementById('suggestions').classList.remove('active');
+            state.suggestionsOpen = false;
+            state.highlightedSuggestionIndex = -1;
+        }
+
+        // ============================================================================
+        // SORTING
+        // ============================================================================
+
+        function applySort() {
+            switch (state.currentSort) {
+                case 'name':
+                    state.filteredProcedures.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'code':
+                    state.filteredProcedures.sort((a, b) => a.code.localeCompare(b.code));
+                    break;
+                case 'relevance':
+                default:
+                    // Already in data order; could enhance with score matching
+                    break;
+            }
+        }
+
+        // ============================================================================
+        // RENDERING
+        // ============================================================================
+
+        function renderFilters() {
+            const categoryList = document.getElementById('categoryList');
+            const bodyPartList = document.getElementById('bodyPartList');
+
+            // Categories
+            const categories = getUniqueCategoriesWithCounts();
+            categoryList.innerHTML = categories.map(([cat, count]) => `
+                <li class="filter-item">
+                    <input type="checkbox" id="cat-${cat}" value="${cat}" class="category-filter" ${state.selectedCategories.includes(cat) ? 'checked' : ''}>
+                    <label for="cat-${cat}">
+                        <span>${cat}</span>
+                        <span class="filter-count">${count}</span>
+                    </label>
+                </li>
+            `).join('');
+
+            // Body Parts
+            const bodyParts = getUniqueBodyPartsWithCounts();
+            bodyPartList.innerHTML = bodyParts.map(([part, count]) => `
+                <li class="filter-item">
+                    <input type="checkbox" id="part-${part}" value="${part}" class="body-part-filter" ${state.selectedBodyParts.includes(part) ? 'checked' : ''}>
+                    <label for="part-${part}">
+                        <span>${part}</span>
+                        <span class="filter-count">${count}</span>
+                    </label>
+                </li>
+            `).join('');
+
+            // A-Z Index
+            const azIndex = document.getElementById('azIndex');
+            azIndex.innerHTML = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map(letter => `
+                <button class="a-z-btn" data-letter="${letter}" aria-label="Browse procedures starting with ${letter}">${letter}</button>
+            `).join('');
+
+            addFilterListeners();
+        }
+
+        function renderResults() {
+            const resultsEl = document.getElementById('results');
+            const resultsCountEl = document.getElementById('resultsCount');
+
+            if (state.filteredProcedures.length === 0) {
+                resultsEl.innerHTML = `
+                    <div style="grid-column: 1/-1; width: 100%;">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3>No results found</h3>
+                            <p>Try adjusting your search or filters</p>
+                        </div>
+                    </div>
+                `;
+                resultsCountEl.textContent = 'No procedures found';
+                return;
+            }
+
+            resultsCountEl.textContent = `${state.filteredProcedures.length} procedure${state.filteredProcedures.length !== 1 ? 's' : ''} found`;
+
+            resultsEl.innerHTML = state.filteredProcedures.map((proc, index) => `
+                <article class="result-card" data-id="${proc.id}" data-index="${index}" role="article" tabindex="0">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="result-code">${proc.code}</span>
+                        <span class="result-category">${proc.category}</span>
+                    </div>
+                    <h3 class="result-title">${proc.name}</h3>
+                    <p class="result-description">${proc.description}</p>
+                    <p class="result-body-part">📍 ${proc.bodyPart}</p>
+                    <div>
+                        <div class="synonyms-label">Synonyms</div>
+                        <div class="synonyms">
+                            ${proc.synonyms.map(syn => `<span class="synonym-tag">${syn}</span>`).join('')}
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            addResultListeners();
+        }
+
+        function addFilterListeners() {
+            // Category filters
+            document.querySelectorAll('.category-filter').forEach(el => {
+                el.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        if (!state.selectedCategories.includes(e.target.value)) {
+                            state.selectedCategories.push(e.target.value);
+                        }
+                    } else {
+                        state.selectedCategories = state.selectedCategories.filter(c => c !== e.target.value);
+                    }
+                    applyFilters();
+                });
+            });
+
+            // Body part filters
+            document.querySelectorAll('.body-part-filter').forEach(el => {
+                el.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        if (!state.selectedBodyParts.includes(e.target.value)) {
+                            state.selectedBodyParts.push(e.target.value);
+                        }
+                    } else {
+                        state.selectedBodyParts = state.selectedBodyParts.filter(p => p !== e.target.value);
+                    }
+                    applyFilters();
+                });
+            });
+
+            // A-Z Index
+            document.querySelectorAll('.a-z-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const letter = e.target.dataset.letter;
+                    document.querySelectorAll('.a-z-btn').forEach(b => b.classList.remove('active'));
+
+                    if (state.browseStartingLetter === letter) {
+                        state.browseStartingLetter = null;
+                    } else {
+                        state.browseStartingLetter = letter;
+                        e.target.classList.add('active');
+                    }
+
+                    state.searchQuery = '';
+                    document.getElementById('searchInput').value = '';
+                    closeSuggestions();
+                    applyFilters();
+                });
+            });
+
+            // Reset buttons
+            document.getElementById('resetCategoryBtn').addEventListener('click', () => {
+                state.selectedCategories = [];
+                renderFilters();
+                applyFilters();
+            });
+
+            document.getElementById('resetBodyPartBtn').addEventListener('click', () => {
+                state.selectedBodyParts = [];
+                renderFilters();
+                applyFilters();
+            });
+        }
+
+        function addResultListeners() {
+            // Sort buttons
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.currentSort = e.target.dataset.sort;
+                    applySort();
+                    renderResults();
+                });
+            });
+
+            // Result card click/focus
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    console.log('Selected procedure:', state.filteredProcedures[parseInt(card.dataset.index)]);
+                });
+
+                card.addEventListener('focus', () => {
+                    document.querySelectorAll('.result-card').forEach(c => c.classList.remove('focused'));
+                    card.classList.add('focused');
+                    state.highlightedResultIndex = parseInt(card.dataset.index);
+                });
+            });
+        }
+
+        // ============================================================================
+        // KEYBOARD NAVIGATION
+        // ============================================================================
+
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('keydown', (e) => {
+            const suggestionsEl = document.getElementById('suggestions');
+            const suggestionItems = suggestionsEl.querySelectorAll('.suggestion-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (state.suggestionsOpen && suggestionItems.length > 0) {
+                    state.highlightedSuggestionIndex = Math.min(
+                        state.highlightedSuggestionIndex + 1,
+                        suggestionItems.length - 1
+                    );
+                    updateSuggestionHighlight(suggestionItems);
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (state.suggestionsOpen) {
+                    state.highlightedSuggestionIndex = Math.max(state.highlightedSuggestionIndex - 1, -1);
+                    updateSuggestionHighlight(suggestionItems);
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (state.highlightedSuggestionIndex >= 0 && suggestionItems[state.highlightedSuggestionIndex]) {
+                    const id = parseInt(suggestionItems[state.highlightedSuggestionIndex].dataset.id);
+                    selectSuggestion(id);
+                } else if (state.searchQuery) {
+                    applyFilters();
+                    closeSuggestions();
+                }
+            } else if (e.key === 'Escape') {
+                closeSuggestions();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            const resultCards = document.querySelectorAll('.result-card');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (!state.suggestionsOpen && resultCards.length > 0) {
+                    state.highlightedResultIndex = Math.min(
+                        state.highlightedResultIndex + 1,
+                        resultCards.length - 1
+                    );
+                    resultCards[state.highlightedResultIndex].focus();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (!state.suggestionsOpen && resultCards.length > 0) {
+                    state.highlightedResultIndex = Math.max(state.highlightedResultIndex - 1, 0);
+                    resultCards[state.highlightedResultIndex].focus();
+                }
+            } else if (e.key === 'Enter') {
+                if (document.activeElement.classList.contains('result-card')) {
+                    e.preventDefault();
+                    const proc = state.filteredProcedures[state.highlightedResultIndex];
+                    console.log('Selected:', proc);
+                }
+            }
+        });
+
+        function updateSuggestionHighlight(suggestionItems) {
+            suggestionItems.forEach((item, index) => {
+                item.classList.toggle('highlighted', index === state.highlightedSuggestionIndex);
+            });
+        }
+
+        // ============================================================================
+        // SEARCH INPUT HANDLER
+        // ============================================================================
+
+        searchInput.addEventListener('input', debounce((e) => {
+            state.searchQuery = e.target.value;
+            state.browseStartingLetter = null;
+            document.querySelectorAll('.a-z-btn').forEach(b => b.classList.remove('active'));
+
+            if (state.searchQuery.length > 0) {
+                renderSuggestions();
+            } else {
+                closeSuggestions();
+            }
+
+            applyFilters();
+        }, 200));
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-wrapper') && !e.target.closest('.search-suggestions')) {
+                closeSuggestions();
+            }
+        });
+
+        // ============================================================================
+        // HELP TEXT CLICKS
+        // ============================================================================
+
+        document.querySelectorAll('.help-text').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const query = e.target.dataset.query;
+                searchInput.value = query;
+                state.searchQuery = query;
+                renderSuggestions();
+                applyFilters();
+                searchInput.focus();
+            });
+        });
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        function init() {
+            renderFilters();
+            applyFilters();
+        }
+
+        init();
+    </script>
+</body>
+</html>
