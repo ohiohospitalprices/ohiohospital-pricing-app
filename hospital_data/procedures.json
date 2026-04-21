@@ -37,7 +37,7 @@
   
   {"hospital": "Pickerington", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 525},
   
-  {"hospital": "Riverside", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12500},
+  {"hospital": "Riverside Methodist Hospital", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12500},
   
   {"hospital": "Shelby", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 28},
   
