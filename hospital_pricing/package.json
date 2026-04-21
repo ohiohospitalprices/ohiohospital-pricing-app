@@ -1,0 +1,17 @@
+{
+  "name": "ohiohealth-pricing",
+  "version": "1.0.0",
+  "description": "OhioHealth Hospital Pricing Lookup Tool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["hospital", "pricing"],
+  "author": "OhioHealth",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

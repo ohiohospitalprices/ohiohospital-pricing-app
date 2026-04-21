@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OhioHealth Hospital Pricing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .hospital-select, .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .hospital-select:focus, .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .category-btn {
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .category-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .results-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .procedures-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .procedure-item {
+            padding: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .procedure-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateX(4px);
+        }
+
+        .procedure-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .procedure-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .procedure-price {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .procedure-details {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .procedure-cpt {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .procedure-cpt span:first-child {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 30px;
+            color: #999;
+        }
+
+        .no-results h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal h2 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .modal-cpt {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+
+        .hospital-prices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hospital-price {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+
+        .hospital-price.current {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: #667eea;
+            font-weight: 600;
+        }
+
+        .hospital-name {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .hospital-price-amount {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .category-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .procedure-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .modal-content {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 OhioHealth Hospital Pricing</h1>
+            <p>Compare procedure costs across OhioHealth facilities</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="hospital-select">Select Hospital</label>
+                <select id="hospital-select" class="hospital-select">
+                    <option value="">All Hospitals</option>
+                    <option value="Columbus">Columbus</option>
+                    <option value="Cleveland">Cleveland</option>
+                    <option value="Dublin">Dublin</option>
+                    <option value="Grady">Grady</option>
+                    <option value="Grant">Grant</option>
+                    <option value="Grove City">Grove City</option>
+                    <option value="Hardin">Hardin</option>
+                    <option value="Mansfield">Mansfield</option>
+                    <option value="Marion">Marion</option>
+                    <option value="O'Bleness">O'Bleness</option>
+                    <option value="Pickerington">Pickerington</option>
+                    <option value="Riverside">Riverside</option>
+                    <option value="Shelby">Shelby</option>
+                    <option value="Southeastern">Southeastern</option>
+                    <option value="Van Wert">Van Wert</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Procedure Category</label>
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="">All Categories</button>
+                    <button class="category-btn" data-category="Surgical">Surgical</button>
+                    <button class="category-btn" data-category="Imaging">Imaging</button>
+                    <button class="category-btn" data-category="Lab">Lab</button>
+                    <button class="category-btn" data-category="Pharmacy">Pharmacy</button>
+                    <button class="category-btn" data-category="ER">ER</button>
+                    <button class="category-btn" data-category="Therapy">Therapy</button>
+                    <button class="category-btn" data-category="Room">Room</button>
+                    <button class="category-btn" data-category="Other">Other</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="search">Search Procedures</label>
+                <input type="text" id="search" class="search-input" placeholder="Type procedure name...">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="results-info">
+                <span id="result-count">Loading procedures...</span>
+            </div>
+            <div id="procedures-container" class="procedures-list"></div>
+        </div>
+    </div>
+
+    <div id="procedure-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-procedure-name"></h2>
+            <div class="modal-cpt">
+                <strong>CPT Code:</strong> <span id="modal-procedure-cpt"></span>
+            </div>
+            <h3>Prices at All OhioHealth Hospitals</h3>
+            <div id="modal-hospitals" class="hospital-prices"></div>
+        </div>
+    </div>
+
+    <script>
+        let allProcedures = [];
+        let currentHospital = '';
+        let currentCategory = '';
+        let currentSearch = '';
+
+        // Load procedures from JSON
+        async function loadProcedures() {
+            try {
+                const response = await fetch('./procedures.json');
+                allProcedures = await response.json();
+                updateResults();
+                updateResultCount();
+            } catch (error) {
+                console.error('Error loading procedures:', error);
+                document.getElementById('procedures-container').innerHTML = 
+                    '<div class="no-results"><h3>Error loading data</h3></div>';
+            }
+        }
+
+        // Filter and display procedures
+        function updateResults() {
+            let filtered = allProcedures;
+
+            // Filter by hospital
+            if (currentHospital) {
+                filtered = filtered.filter(p => p.hospital === currentHospital);
+            }
+
+            // Filter by category
+            if (currentCategory) {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+
+            // Filter by search
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                filtered = filtered.filter(p => 
+                    p.procedure.toLowerCase().includes(searchLower) ||
+                    p.cpt.includes(currentSearch)
+                );
+            }
+
+            // Sort by procedure name
+            filtered.sort((a, b) => a.procedure.localeCompare(b.procedure));
+
+            // Display results
+            const container = document.getElementById('procedures-container');
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-results"><h3>No procedures found</h3><p>Try adjusting your filters</p></div>';
+            } else {
+                container.innerHTML = filtered.map(procedure => `
+                    <div class="procedure-item" onclick="openModal('${procedure.procedure}', '${procedure.cpt}')">
+                        <div class="procedure-header">
+                            <span class="procedure-name">${procedure.procedure}</span>
+                            <span class="procedure-price">$${procedure.price.toLocaleString()}</span>
+                        </div>
+                        <div class="procedure-details">
+                            <div class="procedure-cpt">
+                                <span>CPT:</span>
+                                <span>${procedure.cpt}</span>
+                            </div>
+                            <div>
+                                <span style="font-weight: 600; color: #555;">Hospital:</span>
+                                <span>${procedure.hospital}</span>
+                            </div>
+                            <div style="margin-left: auto; color: #999;">Click to compare prices →</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateResultCount();
+        }
+
+        // Update result count
+        function updateResultCount() {
+            let count = allProcedures.length;
+            if (currentHospital || currentCategory || currentSearch) {
+                const filtered = allProcedures.filter(p => {
+                    let match = true;
+                    if (currentHospital) match = match && p.hospital === currentHospital;
+                    if (currentCategory) match = match && p.category === currentCategory;
+                    if (currentSearch) {
+                        const searchLower = currentSearch.toLowerCase();
+                        match = match && (p.procedure.toLowerCase().includes(searchLower) || p.cpt.includes(currentSearch));
+                    }
+                    return match;
+                });
+                document.getElementById('result-count').textContent = 
+                    `Showing ${filtered.length} of ${count} procedures`;
+            } else {
+                document.getElementById('result-count').textContent = 
+                    `Showing ${count} procedures`;
+            }
+        }
+
+        // Open modal with comparison
+        function openModal(procedureName, cptCode) {
+            const modal = document.getElementById('procedure-modal');
+            document.getElementById('modal-procedure-name').textContent = procedureName;
+            document.getElementById('modal-procedure-cpt').textContent = cptCode;
+
+            // Get all prices for this procedure
+            const prices = allProcedures.filter(p => p.cpt === cptCode && p.procedure === procedureName);
+            
+            const hospitalsHtml = prices
+                .sort((a, b) => a.price - b.price)
+                .map(p => `
+                    <div class="hospital-price${currentHospital === p.hospital ? ' current' : ''}">
+                        <span class="hospital-name">${p.hospital}</span>
+                        <span class="hospital-price-amount">$${p.price.toLocaleString()}</span>
+                    </div>
+                `).join('');
+
+            document.getElementById('modal-hospitals').innerHTML = hospitalsHtml || 
+                '<div class="no-results"><p>No pricing data available</p></div>';
+
+            modal.classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('procedure-modal').classList.remove('show');
+        }
+
+        // Event listeners
+        document.getElementById('hospital-select').addEventListener('change', (e) => {
+            currentHospital = e.target.value;
+            updateResults();
+        });
+
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                updateResults();
+            });
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            updateResults();
+        });
+
+        document.querySelector('.close-btn').addEventListener('click', closeModal);
+
+        document.getElementById('procedure-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('procedure-modal')) {
+                closeModal();
+            }
+        });
+
+        // Load procedures on page load
+        window.addEventListener('load', loadProcedures);
+    </script>
+</body>
+</html>
