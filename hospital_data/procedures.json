@@ -1,47 +1,47 @@
 [
-  {"hospital": "Columbus", "category": "Surgical", "procedure": "Abdominal Aortic Aneurysm Repair", "cpt": "34800", "price": 45000},
-  {"hospital": "Columbus", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8500},
-  {"hospital": "Columbus", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12000},
-  {"hospital": "Columbus", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1200},
-  {"hospital": "Columbus", "category": "Imaging", "procedure": "MRI - Brain", "cpt": "70553", "price": 1800},
-  {"hospital": "Columbus", "category": "Lab", "procedure": "Blood Culture", "cpt": "87040", "price": 85},
-  {"hospital": "Columbus", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 25},
-  {"hospital": "Columbus", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 150},
-  {"hospital": "Columbus", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 850},
-  {"hospital": "Columbus", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 95},
-  {"hospital": "Columbus", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 550},
-  {"hospital": "Columbus", "category": "Other", "procedure": "Consultation - Specialist", "cpt": "99243", "price": 200},
+  {"hospital": "St. Mary's Medical Center", "category": "Surgical", "procedure": "Abdominal Aortic Aneurysm Repair", "cpt": "34800", "price": 45000},
+  {"hospital": "St. Mary's Medical Center", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8500},
+  {"hospital": "St. Mary's Medical Center", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12000},
+  {"hospital": "St. Mary's Medical Center", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1200},
+  {"hospital": "St. Mary's Medical Center", "category": "Imaging", "procedure": "MRI - Brain", "cpt": "70553", "price": 1800},
+  {"hospital": "St. Mary's Medical Center", "category": "Lab", "procedure": "Blood Culture", "cpt": "87040", "price": 85},
+  {"hospital": "St. Mary's Medical Center", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 25},
+  {"hospital": "St. Mary's Medical Center", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 150},
+  {"hospital": "St. Mary's Medical Center", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 850},
+  {"hospital": "St. Mary's Medical Center", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 95},
+  {"hospital": "St. Mary's Medical Center", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 550},
+  {"hospital": "St. Mary's Medical Center", "category": "Other", "procedure": "Consultation - Specialist", "cpt": "99243", "price": 200},
   
-  {"hospital": "Cleveland", "category": "Surgical", "procedure": "Abdominal Aortic Aneurysm Repair", "cpt": "34800", "price": 48000},
-  {"hospital": "Cleveland", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8900},
-  {"hospital": "Cleveland", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1100},
-  {"hospital": "Cleveland", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 22},
+  {"hospital": "Cleveland Clinic", "category": "Surgical", "procedure": "Abdominal Aortic Aneurysm Repair", "cpt": "34800", "price": 48000},
+  {"hospital": "Cleveland Clinic", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8900},
+  {"hospital": "Cleveland Clinic", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1100},
+  {"hospital": "Cleveland Clinic", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 22},
   
-  {"hospital": "Dublin", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 11500},
-  {"hospital": "Dublin", "category": "Imaging", "procedure": "MRI - Brain", "cpt": "70553", "price": 1950},
+  {"hospital": "University Hospitals", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 11500},
+  {"hospital": "University Hospitals", "category": "Imaging", "procedure": "MRI - Brain", "cpt": "70553", "price": 1950},
   
-  {"hospital": "Grady", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 750},
-  {"hospital": "Grady", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 500},
+  {"hospital": "Mercy Health", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 750},
+  {"hospital": "Mercy Health", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 500},
   
-  {"hospital": "Grant", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 100},
+  {"hospital": "MetroHealth Medical Center", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 100},
   
-  {"hospital": "Grove City", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 160},
+  {"hospital": "Summa Health", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 160},
   
-  {"hospital": "Hardin", "category": "Lab", "procedure": "Blood Culture", "cpt": "87040", "price": 90},
+  {"hospital": "Aultman Hospital", "category": "Lab", "procedure": "Blood Culture", "cpt": "87040", "price": 90},
   
-  {"hospital": "Mansfield", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8200},
+  {"hospital": "Akron City Hospital", "category": "Surgical", "procedure": "Arthroscopy - Knee", "cpt": "29881", "price": 8200},
   
-  {"hospital": "Marion", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1300},
+  {"hospital": "St. Mary's Medical Center", "category": "Imaging", "procedure": "CT Scan - Abdomen", "cpt": "74150", "price": 1300},
   
-  {"hospital": "O'Bleness", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 900},
+  {"hospital": "Cleveland Clinic", "category": "ER", "procedure": "Emergency Department Visit", "cpt": "99285", "price": 900},
   
-  {"hospital": "Pickerington", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 525},
+  {"hospital": "University Hospitals", "category": "Room", "procedure": "Hospital Room - Private", "cpt": "0", "price": 525},
   
-  {"hospital": "Riverside Methodist Hospital", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12500},
+  {"hospital": "Mercy Health", "category": "Surgical", "procedure": "Appendectomy", "cpt": "44960", "price": 12500},
   
-  {"hospital": "Shelby", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 28},
+  {"hospital": "Summa Health", "category": "Lab", "procedure": "Complete Blood Count", "cpt": "85025", "price": 28},
   
-  {"hospital": "Southeastern", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 92},
+  {"hospital": "Aultman Hospital", "category": "Therapy", "procedure": "Physical Therapy Session", "cpt": "97110", "price": 92},
   
-  {"hospital": "Van Wert", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 140}
+  {"hospital": "MetroHealth Medical Center", "category": "Pharmacy", "procedure": "IV Infusion", "cpt": "96360", "price": 140}
 ]
