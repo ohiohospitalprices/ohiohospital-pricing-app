@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ohiohealth-pricing
+    runtime: node
+    plan: free
+    root: hospital_pricing
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
