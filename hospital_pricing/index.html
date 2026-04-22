@@ -852,6 +852,177 @@
             margin: 0;
         }
 
+        /* CMS STANDARDS BADGE - HEADER POSITION */
+        .cms-standards-badge {
+            background: white;
+            border: 2px solid #003366;
+            color: #003366;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 51, 102, 0.15);
+        }
+
+        .cms-standards-badge::before {
+            content: "✓";
+            font-size: 1.1em;
+            font-weight: 900;
+        }
+
+        /* DATA STANDARDS SECTION */
+        .data-standards-section {
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.08) 0%, rgba(0, 102, 153, 0.06) 100%);
+            border-left: 5px solid #003366;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 51, 102, 0.1);
+        }
+
+        .data-standards-section strong {
+            color: #003366;
+            font-weight: 700;
+        }
+
+        /* OFFICIAL RESOURCES FOOTER */
+        .official-resources-footer {
+            background: white;
+            border-top: 3px solid #003366;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .resources-title {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #003366;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resources-title::before {
+            content: "🏛️";
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .resource-link {
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.02) 0%, rgba(0, 102, 153, 0.02) 100%);
+            border: 2px solid #003366;
+            border-radius: 6px;
+            padding: 16px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .resource-link:hover {
+            border-color: #006699;
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.08) 0%, rgba(0, 102, 153, 0.06) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.2);
+        }
+
+        .resource-link-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .resource-link-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .resource-link-title {
+            font-weight: 700;
+            color: #003366;
+            font-size: 0.95em;
+        }
+
+        .resource-link-desc {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        /* CMS INFO ICONS */
+        .cms-info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #003366;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7em;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cms-info-icon:hover {
+            transform: scale(1.2);
+            box-shadow: 0 2px 8px rgba(0, 51, 102, 0.4);
+        }
+
+        .cms-tooltip-text {
+            visibility: hidden;
+            background-color: #003366;
+            color: white;
+            text-align: left;
+            border-radius: 4px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 0.75em;
+            line-height: 1.4;
+            font-weight: normal;
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+            white-space: normal;
+        }
+
+        .cms-tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #003366;
+        }
+
+        .cms-info-icon:hover .cms-tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* MOBILE RESPONSIVENESS FOR CREDIBILITY */
         @media (max-width: 768px) {
             .credibility-section {
@@ -972,6 +1143,9 @@
         </div>
 
         <div class="header">
+            <div class="cms-standards-badge">
+                Built on CMS Hospital Price Transparency Standards (Data Dictionary Compliant)
+            </div>
             <h1>
                 <svg class="ohio-icon" viewBox="0 0 100 100" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="50" cy="50" r="48" fill="white"/>
@@ -1093,6 +1267,13 @@
                 <button class="story-cta" onclick="alert('Compare prices now to avoid surprise bills!')">✓ Avoid Surprise Bills - Compare Now</button>
             </div>
 
+            <!-- DATA STANDARDS COMPLIANCE -->
+            <div class="data-standards-section">
+                <strong>📊 CMS Data Standards Compliance</strong><br><br>
+                Our data follows <strong>CMS Hospital Price Transparency Data Dictionary</strong> standards. Hospital pricing files are aggregated from federally-mandated compliance filings published by Ohio hospitals in accordance with CMS regulations. All procedures are classified using standardized CPT codes and category definitions established by CMS.
+                <br><span class="cms-info-icon">?<span class="cms-tooltip-text">Official CMS standard for how hospital pricing data must be structured and reported</span></span>
+            </div>
+
             <!-- FEATURE 4: WHY WE EXIST - FEDERAL LAW CREDIBILITY SECTION -->
             <div class="credibility-section">
                 <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
@@ -1101,6 +1282,8 @@
                         <h3 class="credibility-headline">Federal Law Requires Price Transparency</h3>
                         <p class="credibility-body">
                             Starting January 1, 2021, all U.S. hospitals are required by the Centers for Medicare & Medicaid Services (CMS) to post upfront pricing for all items and services. This tool aggregates that data, making it accessible and comparable for Ohio residents. <strong>You have the RIGHT to know what healthcare costs BEFORE you receive care.</strong>
+                            <br><br>
+                            <strong style="color: #003366;">We use official CMS-compliant data structures and follow CMS Hospital Price Transparency standards for all pricing information displayed.</strong> Every procedure listed in this tool is verified against CMS Data Dictionary specifications to ensure accuracy and compliance.
                         </p>
                     </div>
                 </div>
@@ -1130,7 +1313,7 @@
                 </div>
 
                 <div style="font-size: 0.85em; color: #666; border-top: 1px solid #ddd; padding-top: 12px; text-align: center;">
-                    📋 Learn more at <a href="https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency" target="_blank" style="color: #667eea; font-weight: 600;">CMS Hospital Price Transparency Initiative</a>
+                    📋 Learn more about <span class="cms-info-icon" style="display: inline-flex; margin-left: 0; margin-right: 0;">?<span class="cms-tooltip-text">Centers for Medicare & Medicaid Services - federal agency overseeing hospital compliance</span></span><a href="https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency" target="_blank" style="color: #667eea; font-weight: 600;">CMS Hospital Price Transparency Initiative</a>
                 </div>
             </div>
 
@@ -1268,6 +1451,48 @@
                 <span id="result-count">Loading procedures...</span>
             </div>
             <div id="procedures-container" class="procedures-list"></div>
+        </div>
+
+        <!-- OFFICIAL RESOURCES FOOTER -->
+        <div class="official-resources-footer">
+            <h3 class="resources-title">Official CMS Resources</h3>
+            <div class="resources-grid">
+                <a href="https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency" target="_blank" class="resource-link">
+                    <div class="resource-link-icon">🏛️</div>
+                    <div class="resource-link-content">
+                        <div class="resource-link-title">CMS Hospital Price Transparency Initiative</div>
+                        <div class="resource-link-desc">Official CMS mandate and compliance information</div>
+                    </div>
+                </a>
+                <a href="https://www.cms.gov/files/document/hospital-price-transparency-faqs.pdf" target="_blank" class="resource-link">
+                    <div class="resource-link-icon">📄</div>
+                    <div class="resource-link-content">
+                        <div class="resource-link-title">HPT FAQs (PDF)</div>
+                        <div class="resource-link-desc">Frequently asked questions about hospital price transparency</div>
+                    </div>
+                </a>
+                <a href="https://www.cms.gov/files/document/hospital-outpatient-prospective-payment-system-opps-proposed-rule.pdf" target="_blank" class="resource-link">
+                    <div class="resource-link-icon">📋</div>
+                    <div class="resource-link-content">
+                        <div class="resource-link-title">CY 2026 OPPS & ASC Final Rule</div>
+                        <div class="resource-link-desc">Current year payment and coding standards</div>
+                    </div>
+                </a>
+                <a href="https://github.com/CMSgov/hospital-price-transparency" target="_blank" class="resource-link">
+                    <div class="resource-link-icon">💾</div>
+                    <div class="resource-link-content">
+                        <div class="resource-link-title">HPT Data Dictionary (GitHub)</div>
+                        <div class="resource-link-desc">Technical specifications for hospital pricing data</div>
+                    </div>
+                </a>
+                <a href="https://github.com/CMSgov/hospital-price-transparency-tools" target="_blank" class="resource-link">
+                    <div class="resource-link-icon">🛠️</div>
+                    <div class="resource-link-content">
+                        <div class="resource-link-title">HPT Tools (GitHub)</div>
+                        <div class="resource-link-desc">CMS validation and testing tools for compliance</div>
+                    </div>
+                </a>
+            </div>
         </div>
 
         <!-- FEATURE 5: MISSION FOOTER -->
