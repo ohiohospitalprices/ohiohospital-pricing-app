@@ -1,11 +1,12 @@
 services:
   - type: web
-    name: ohiohealth-pricing
-    runtime: node
-    plan: free
-    root: hospital_pricing
-    buildCommand: npm install
-    startCommand: npm start
+    name: ohiohospital-pricing-app
+    runtime: python
+    runtimeVersion: 3.11
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
     envVars:
-      - key: NODE_ENV
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: FLASK_ENV
         value: production
