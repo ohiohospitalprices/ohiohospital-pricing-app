@@ -56,6 +56,11 @@ def serve_index():
     """Serve the optimized index.html"""
     return send_from_directory('.', 'index.html')
 
+@app.route('/test')
+def test():
+    """Simple test route"""
+    return jsonify({'message': 'Flask is running!', 'version': '1.0'})
+
 @app.route('/api/procedures', methods=['GET'])
 def get_procedures():
     """Get paginated procedures with filtering"""
