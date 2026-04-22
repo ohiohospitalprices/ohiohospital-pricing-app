@@ -162,7 +162,7 @@
 
         .system-tabs {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
@@ -1286,6 +1286,7 @@
                     <button class="system-tab active" data-system="OhioHealth">OhioHealth</button>
                     <button class="system-tab" data-system="OSU">OSU</button>
                     <button class="system-tab" data-system="MountCarmel">Mount Carmel</button>
+                    <button class="system-tab" data-system="ChildrensHospitals">Children's Hospitals</button>
                 </div>
             </div>
 
@@ -1328,6 +1329,9 @@
                         <option value="Mount Carmel Westerville">Mount Carmel Westerville</option>
                         <option value="Mount Carmel Delaware">Mount Carmel Delaware</option>
                     </optgroup>
+                    <optgroup label="Children's Hospitals">
+                        <option value="Nationwide Children's Hospital - Columbus">Nationwide Children's Hospital - Columbus</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -1350,6 +1354,9 @@
                     <button class="category-btn" data-category="Other">Other</button>
                     <button class="category-btn" data-category="">All Categories</button>
                 </div>
+            </div>
+
+            <div id="hospital-info-box" class="hospital-info-box" style="display: none; margin-bottom: 20px; padding: 16px; background: #f0f7ff; border-left: 4px solid #667eea; border-radius: 6px;">
             </div>
 
             <div class="control-group">
@@ -3019,7 +3026,18 @@
             MountCarmel: [
                 'Mount Carmel East', 'Mount Carmel West', 'Mount Carmel New Albany',
                 'Mount Carmel Grove City', 'Mount Carmel Westerville', 'Mount Carmel Delaware'
+            ],
+            ChildrensHospitals: [
+                "Nationwide Children's Hospital - Columbus"
             ]
+        };
+
+        const hospitalInfo = {
+            "Nationwide Children's Hospital - Columbus": {
+                description: "Pediatric specialty hospital - Serving children from birth through young adulthood. Pricing current as of January 1, 2026.",
+                contact: "(614) 722-2055",
+                email: "Children'sPatientAccounts@NationwideChildrens.org"
+            }
         };
 
         // Load saved hospitals from localStorage
@@ -3225,6 +3243,18 @@
 
         document.getElementById('hospital-select').addEventListener('change', (e) => {
             currentHospital = e.target.value;
+            const infoBox = document.getElementById('hospital-info-box');
+            if (currentHospital && hospitalInfo[currentHospital]) {
+                const info = hospitalInfo[currentHospital];
+                infoBox.innerHTML = `
+                    <strong>${currentHospital}</strong><br>
+                    ${info.description}<br><br>
+                    <strong>Contact:</strong> ${info.contact} | ${info.email}
+                `;
+                infoBox.style.display = 'block';
+            } else {
+                infoBox.style.display = 'none';
+            }
             updateResults();
         });
 
