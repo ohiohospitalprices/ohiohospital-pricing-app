@@ -75,6 +75,7 @@ def load_data(conn):
     
     cursor = conn.cursor()
     inserted_count = 0
+    skipped_count = 0
     
     # Get unique hospitals and procedures first
     hospitals_set = set()
@@ -127,29 +128,51 @@ def load_data(conn):
     conn.commit()
     print(f"[OK] Inserted {len(procedure_map)} procedures")
     
-    # Insert pricing records
+    # Insert pricing records with deduplication
+    # Track what we've inserted to avoid duplicate inserts
+    pricing_inserted = set()
+    
     for record in data:
         hospital_name = record.get('hospital')
         proc_name = record.get('procedure')
         cpt = record.get('cpt')
         price = record.get('price')
         
-        if all([hospital_name, proc_name, cpt, price is not None]):
-            hospital_id = hospital_map.get(hospital_name)
-            procedure_id = procedure_map.get((proc_name, cpt))
-            
-            if hospital_id and procedure_id:
+        # Skip if missing required fields (but allow price=0 or price=None)
+        if not all([hospital_name, proc_name, cpt]):
+            skipped_count += 1
+            continue
+        
+        # Use 0 if price is None
+        if price is None:
+            price = 0
+        
+        hospital_id = hospital_map.get(hospital_name)
+        procedure_id = procedure_map.get((proc_name, cpt))
+        
+        if hospital_id and procedure_id:
+            pricing_key = (hospital_id, procedure_id)
+            if pricing_key not in pricing_inserted:
                 try:
                     cursor.execute(
-                        'INSERT INTO pricing (hospital_id, procedure_id, price) VALUES (?, ?, ?) ON CONFLICT(hospital_id, procedure_id) DO NOTHING',
+                        'INSERT INTO pricing (hospital_id, procedure_id, price) VALUES (?, ?, ?)',
                         (hospital_id, procedure_id, price)
                     )
                     inserted_count += 1
-                except sqlite3.Error:
-                    pass
+                    pricing_inserted.add(pricing_key)
+                except sqlite3.IntegrityError:
+                    # Skip if already exists (from previous run or duplicates in JSON)
+                    skipped_count += 1
+                except sqlite3.Error as e:
+                    print(f"Error inserting pricing for {hospital_name}/{proc_name}: {e}")
+                    skipped_count += 1
+            else:
+                skipped_count += 1
     
     conn.commit()
     print(f"[OK] Inserted {inserted_count} pricing records")
+    if skipped_count > 0:
+        print(f"[INFO] Skipped {skipped_count} duplicate/invalid records")
     
     return inserted_count
 
