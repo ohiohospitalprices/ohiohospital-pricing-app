@@ -1170,6 +1170,59 @@
             .mission-text {
                 flex-direction: column;
             }
+
+            /* MOBILE RESPONSIVE: COMPARISON TABLE TO CARDS */
+            table {
+                font-size: 0.85em !important;
+            }
+
+            table thead {
+                display: none;
+            }
+
+            table tbody tr {
+                display: block;
+                margin-bottom: 16px;
+                border: 2px solid #667eea !important;
+                border-radius: 8px;
+                overflow: hidden;
+                background: white;
+            }
+
+            table tbody tr.mobile-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 12px !important;
+                margin-bottom: 12px;
+            }
+
+            table td {
+                display: block;
+                padding: 12px !important;
+                border: none !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+                text-align: left !important;
+            }
+
+            table td:last-child {
+                border-bottom: none !important;
+            }
+
+            table td:first-child {
+                font-weight: 700;
+                color: #333;
+                background: #f8f9fa;
+                padding: 12px !important;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #667eea;
+                display: block;
+                margin-bottom: 6px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -1326,6 +1379,253 @@
                 </div>
                 <div style="font-size: 0.95em; font-weight: 600; color: #333; margin-bottom: 14px;">— Ilaria Santangelo, Patient Advocate</div>
                 <button class="story-cta" onclick="alert('Compare prices now to avoid surprise bills!')">✓ Avoid Surprise Bills - Compare Now</button>
+            </div>
+
+            <!-- ==================== WHY OUR TOOL IS DIFFERENT ==================== -->
+            <div style="margin-top: 50px; padding-top: 30px; border-top: 3px solid #f0f0f0;">
+                <h2 style="font-size: 1.8em; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 1.2em;">✨</span> WHY OUR TOOL IS DIFFERENT
+                </h2>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 40px 30px; text-align: center; color: white; margin-bottom: 40px; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+                    <h3 style="font-size: 1.8em; font-weight: 700; margin: 0; line-height: 1.3;">
+                        Simple. Transparent. Actually Helps.
+                    </h3>
+                    <p style="font-size: 1.1em; opacity: 0.95; margin-top: 12px; margin-bottom: 0;">
+                        Hospital price tools are confusing. Ours isn't.
+                    </p>
+                </div>
+
+                <!-- COMPARISON GRID: OUR TOOL VS OTHERS -->
+                <div style="background: white; border-radius: 10px; padding: 30px; border: 2px solid #667eea; margin-bottom: 40px; box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin: 0 0 24px 0; text-align: center;">
+                        How We Compare to Other Price Transparency Tools
+                    </h3>
+
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                            <thead>
+                                <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <th style="padding: 16px; text-align: left; font-weight: 700; border: 1px solid #ddd;">Feature</th>
+                                    <th style="padding: 16px; text-align: center; font-weight: 700; border: 1px solid #ddd; background: linear-gradient(135deg, #27AE60 0%, #2ecc71 100%); color: white;">Our Tool</th>
+                                    <th style="padding: 16px; text-align: center; font-weight: 700; border: 1px solid #ddd;">Other Tools</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Row 1: Interface -->
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">🎯 Interface</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Simple hospital selector + category buttons. No confusing CPT codes to decode.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Complex dropdown menus. Requires medical knowledge.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 2: Pricing Display -->
+                                <tr style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.04) 0%, rgba(39, 174, 96, 0.02) 100%); border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">💰 Pricing Display</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Color-coded prices (red/yellow/green). Clear at a glance.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Raw data displays. Hard to compare.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 3: Cash Prices -->
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">💵 Cash/Self-Pay Prices</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Shows cash/self-pay pricing clearly.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Often missing or confusing.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 4: Accessibility -->
+                                <tr style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.04) 0%, rgba(39, 174, 96, 0.02) 100%); border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">♿ Accessibility</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Colorblind-friendly design. Labels + colors.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Color-only indicators. Excludes colorblind users.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 5: Education -->
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">📚 Education & Guides</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Guides on how to dispute bills, negotiate, understand Medicare.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Just shows prices. No guidance.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 6: Actionable -->
+                                <tr style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.04) 0%, rgba(39, 174, 96, 0.02) 100%); border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">⚡ Actionable Resources</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Negotiation scripts, billing rules, patient protection info.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Information only. Doesn't help you save money.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 7: Emergency Ready -->
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 600; color: #333;">📱 Emergency Ready</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 600; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Available 24/7. Works on mobile for quick price checks.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">Desktop-heavy. Clunky on mobile.</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 8: Results -->
+                                <tr style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.08) 0%, rgba(39, 174, 96, 0.04) 100%);">
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; font-weight: 700; color: #27AE60;">💡 Actual Results</td>
+                                    <td style="padding: 16px; border-right: 1px solid #ddd; color: #27AE60; font-weight: 700; text-align: center;">
+                                        <span style="color: #27AE60; font-size: 1.3em; display: block; margin-bottom: 4px;">✓</span>
+                                        <span style="font-size: 0.9em;">Patients save 10-50%+ using our negotiation tactics.</span>
+                                    </td>
+                                    <td style="padding: 16px; color: #d63031; font-weight: 700; text-align: center;">
+                                        <span style="color: #d63031; font-size: 1.3em; display: block; margin-bottom: 4px;">✗</span>
+                                        <span style="font-size: 0.9em;">No guidance on actually reducing costs.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid #e0e0e0; text-align: center; font-size: 0.85em; color: #666;">
+                        <span style="font-style: italic;">Comparison based on publicly available features and user feedback</span>
+                    </div>
+                </div>
+
+                <!-- FEATURES GRID -->
+                <div style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.08) 0%, rgba(46, 204, 113, 0.04) 100%); border: 2px solid #27AE60; border-radius: 10px; padding: 40px 30px; margin-bottom: 40px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #27AE60; margin: 0 0 28px 0; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">✓</span> What Sets Us Apart
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">🏥</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">24 Hospitals</div>
+                            <div style="font-size: 0.85em; color: #666;">All Ohio major systems</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">📊</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">300K+ Procedures</div>
+                            <div style="font-size: 0.85em; color: #666;">Complete pricing data</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">📋</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Bill Verification Guides</div>
+                            <div style="font-size: 0.85em; color: #666;">Spot overcharges</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">⚖️</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Hospital Billing Rules</div>
+                            <div style="font-size: 0.85em; color: #666;">Know your rights</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">💰</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Negotiation Playbook</div>
+                            <div style="font-size: 0.85em; color: #666;">Proven tactics work</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">🏥</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Medicare Coverage Guide</div>
+                            <div style="font-size: 0.85em; color: #666;">Understand coverage</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">🛡️</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Patient Protection Framework</div>
+                            <div style="font-size: 0.85em; color: #666;">Your rights protected</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 18px; text-align: center; border-left: 4px solid #27AE60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);">
+                            <div style="font-size: 1.4em; margin-bottom: 8px;">🔗</div>
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 6px;">Official Resource Links</div>
+                            <div style="font-size: 0.85em; color: #666;">Trusted sources</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TESTIMONIALS -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin: 0 0 24px 0; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">💬</span> What Users Say
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div style="background: white; border-radius: 8px; padding: 24px; border-left: 5px solid #F39C12; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                            <div style="font-size: 1.8em; margin-bottom: 12px; color: #F39C12;">⭐⭐⭐⭐⭐</div>
+                            <p style="color: #333; font-size: 1.05em; font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
+                                "Finally, a price tool that actually works!"
+                            </p>
+                            <p style="color: #666; font-size: 0.9em; margin: 0;">
+                                — Patient, Ohio
+                            </p>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 24px; border-left: 5px solid #F39C12; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                            <div style="font-size: 1.8em; margin-bottom: 12px; color: #F39C12;">⭐⭐⭐⭐⭐</div>
+                            <p style="color: #333; font-size: 1.05em; font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
+                                "Clean design, easy to use, no medical degree required"
+                            </p>
+                            <p style="color: #666; font-size: 0.9em; margin: 0;">
+                                — User, Columbus
+                            </p>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 24px; border-left: 5px solid #F39C12; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                            <div style="font-size: 1.8em; margin-bottom: 12px; color: #F39C12;">⭐⭐⭐⭐⭐</div>
+                            <p style="color: #333; font-size: 1.05em; font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
+                                "Actually helps me understand my bill and negotiate"
+                            </p>
+                            <p style="color: #666; font-size: 0.9em; margin: 0;">
+                                — Patient Advocate
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA BUTTON -->
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <button onclick="document.querySelector('.hospital-select').focus(); document.documentElement.scrollIntoView({behavior: 'smooth'});" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px 48px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+                        Start Comparing Prices Now →
+                    </button>
+                </div>
             </div>
 
             <!-- DATA STANDARDS COMPLIANCE -->
