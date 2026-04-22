@@ -321,6 +321,23 @@ def health_check():
             'error': str(e)
         }), 500
 
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors"""
+    return jsonify({
+        'error': 'Not found',
+        'path': request.path,
+        'message': 'The requested endpoint does not exist'
+    }), 404
+
+@app.errorhandler(500)
+def server_error(error):
+    """Handle 500 errors"""
+    return jsonify({
+        'error': 'Server error',
+        'message': str(error)
+    }), 500
+
 if __name__ == '__main__':
     # Run with production WSGI server
     # For development: python app.py
