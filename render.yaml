@@ -2,11 +2,13 @@ services:
   - type: web
     name: ohiohospital-pricing-app
     runtime: python
-    runtimeVersion: 3.11
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    runtimeVersion: "3.11"
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --access-logfile - --error-logfile -
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: PYTHONUNBUFFERED
+        value: "1"
       - key: FLASK_ENV
         value: production

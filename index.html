@@ -59,6 +59,72 @@
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
+            position: relative;
+        }
+
+        .vs-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            opacity: 0.9;
+            width: 160px;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        .ohio-bg-outline {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            z-index: 0;
+            pointer-events: none;
+            filter: drop-shadow(0 0 1px rgba(255,255,255,0.3));
+        }
+
+        .vs-text {
+            position: relative;
+            z-index: 2;
+            font-size: 1.3em;
+            letter-spacing: 0.15em;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Ohio outline container shadow effect */
+        .vs-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .vs-container {
+                width: 120px;
+                height: 120px;
+            }
+
+            .vs-text {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .vs-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .vs-text {
+                font-size: 0.95em;
+            }
         }
 
         .comparison-item {
@@ -1185,7 +1251,31 @@
                         <div class="price-highlight">$200</div>
                         <div class="hospital-label">Hospital A</div>
                     </div>
-                    <div style="font-weight: bold; opacity: 0.7;">VS</div>
+                    <div class="vs-container">
+                        <svg class="ohio-bg-outline" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="ohioGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.18" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.12" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Ohio State Outline -->
+                            <path d="M 100 25 
+                                     C 125 28, 145 45, 150 70
+                                     C 152 85, 150 100, 145 115
+                                     C 142 125, 135 135, 120 140
+                                     C 105 145, 85 148, 70 145
+                                     C 50 140, 35 130, 28 110
+                                     C 22 95, 20 75, 25 55
+                                     C 30 40, 45 28, 65 25
+                                     C 80 23, 90 22, 100 25 Z" 
+                                  fill="url(#ohioGradient)" 
+                                  stroke="rgba(255,255,255,0.2)" 
+                                  stroke-width="1"
+                                  opacity="0.35"/>
+                        </svg>
+                        <span class="vs-text">VS</span>
+                    </div>
                     <div class="comparison-item">
                         <div class="procedure-label">Lower-Lumbar MRI</div>
                         <div class="price-highlight">$2,000</div>
