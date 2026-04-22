@@ -597,6 +597,60 @@
             border-radius: 8px;
         }
 
+        /* BILLING VERIFICATION CHECKLIST STYLES */
+        .checklist-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: #F39C12;
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.15);
+            background: #fffbf0;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #F39C12;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checklist-item.checked {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.08) 0%, rgba(255, 107, 107, 0.04) 100%);
+            border-color: #F39C12;
+        }
+
+        .checklist-item.checked .checklist-label {
+            color: #333;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-weight: 500;
+            color: #555;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-description {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
         .help-section h3 {
             color: #667eea;
             font-size: 1.1em;
@@ -1317,6 +1371,363 @@
                 </div>
             </div>
 
+            <!-- PROTECT YOURSELF FROM OVERCHARGES SECTION -->
+            <div style="margin-top: 50px; padding-top: 30px; border-top: 3px solid #f0f0f0;">
+                <h2 style="font-size: 1.8em; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 1.2em;">🛡️</span> PROTECT YOURSELF FROM OVERCHARGES
+                </h2>
+                <p style="font-size: 1.05em; color: #555; margin-bottom: 24px; line-height: 1.6;">
+                    Nearly half of hospital bills contain errors. Know what to look for and how to dispute incorrect charges.
+                </p>
+
+                <!-- KEY STATISTIC BOX -->
+                <div style="background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%); border-radius: 10px; padding: 28px; margin-bottom: 30px; box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3); color: white; border-left: 6px solid #d63031;">
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                        <span style="font-size: 2.5em;">⚠️</span>
+                        <div>
+                            <div style="font-size: 1.5em; font-weight: 900; line-height: 1;">49-80% of Hospital Bills Contain Errors</div>
+                            <div style="font-size: 1em; opacity: 0.95; margin-top: 6px; font-weight: 500;">Know what to look for—and take action</div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 16px; border-left: 4px solid white; font-size: 0.95em; line-height: 1.6;">
+                        Most errors go unnoticed because patients don't review their bills. This guide helps you identify and dispute overcharges before you pay.
+                    </div>
+                </div>
+
+                <!-- SPOT OVERCHARGES STEP-BY-STEP GUIDE -->
+                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border: 2px solid #667eea; border-radius: 10px; padding: 28px; margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">✓</span> 5-Step Guide to Spot Overcharges
+                    </h3>
+
+                    <!-- Step 1 -->
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        <div style="background: white; border-radius: 8px; padding: 20px; border-left: 5px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3em; flex-shrink: 0;">1</div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Request an Itemized Bill</h4>
+                                    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">Get a line-by-line breakdown of every charge—not just a summary. This is your right under federal law.</p>
+                                    <div style="background: #f8f9fa; border-left: 3px solid #667eea; padding: 12px; border-radius: 4px; font-size: 0.95em; color: #555;">
+                                        <strong>Hospitals must provide:</strong> Itemized bill within 30 days of request. Include dates of service, procedures, tests, medications, facility fees, and professional charges.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div style="background: white; border-radius: 8px; padding: 20px; border-left: 5px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3em; flex-shrink: 0;">2</div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Compare with Your EOB</h4>
+                                    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">Check your Explanation of Benefits (EOB) from your insurance company. Your bill total should NOT exceed the EOB amount.</p>
+                                    <div style="background: #f8f9fa; border-left: 3px solid #667eea; padding: 12px; border-radius: 4px; font-size: 0.95em; color: #555;">
+                                        <strong>Red Flag:</strong> If hospital bill charges exceed what insurance approved, you may be overcharged. Compare line-by-line.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div style="background: white; border-radius: 8px; padding: 20px; border-left: 5px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3em; flex-shrink: 0;">3</div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Look for Common Errors</h4>
+                                    <p style="color: #666; line-height: 1.6; margin-bottom: 12px;">These are the most frequently found billing errors:</p>
+                                    <ul style="margin: 0 0 12px 20px; color: #666; line-height: 1.8; font-size: 0.95em;">
+                                        <li><strong>Duplicate charges:</strong> Same test or medication billed twice</li>
+                                        <li><strong>Services not rendered:</strong> Charges for procedures you didn't receive</li>
+                                        <li><strong>"Upcoding":</strong> Charged for expensive service but received cheaper alternative</li>
+                                        <li><strong>Fake fees:</strong> "Hydration" IV fees that didn't meet 31-minute minimum requirement</li>
+                                        <li><strong>Facility fees:</strong> Excessive charges for room, equipment, or supplies</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div style="background: white; border-radius: 8px; padding: 20px; border-left: 5px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3em; flex-shrink: 0;">4</div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Use Price Transparency Files</h4>
+                                    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">Compare your bill charges to the hospital's posted prices using this tool or the hospital's own price transparency file.</p>
+                                    <div style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.08) 0%, rgba(39, 174, 96, 0.04) 100%); border-left: 3px solid #27AE60; padding: 12px; border-radius: 4px; font-size: 0.95em; color: #333;">
+                                        <strong style="color: #27AE60;">Use This Tool:</strong> Search your procedure, select your hospital, and compare your charge to the posted price. Use the difference as evidence if disputing.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div style="background: white; border-radius: 8px; padding: 20px; border-left: 5px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3em; flex-shrink: 0;">5</div>
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Dispute Errors</h4>
+                                    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">Contact the hospital's billing department immediately with your evidence of the overcharge.</p>
+                                    <div style="background: #f8f9fa; border-left: 3px solid #667eea; padding: 12px; border-radius: 4px; font-size: 0.95em; color: #555;">
+                                        <strong>What to do:</strong> Request adjustment or payment plan. Submit itemized bill + EOB + evidence. Request written response within 30 days.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMMON BILLING ERRORS CHECKLIST -->
+                <div style="background: linear-gradient(135deg, rgba(243, 156, 18, 0.08) 0%, rgba(255, 107, 107, 0.06) 100%); border: 2px solid #F39C12; border-radius: 10px; padding: 28px; margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">📋</span> Common Billing Errors Checklist
+                    </h3>
+                    <p style="color: #666; margin-bottom: 16px; line-height: 1.6;">Use this interactive checklist to verify your hospital bill. Check off each item as you review:</p>
+                    
+                    <div id="error-checklist" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Checkboxes will be populated by JavaScript -->
+                    </div>
+
+                    <div id="checklist-results" style="display: none; margin-top: 20px; background: #fff9e6; border-left: 4px solid #F39C12; padding: 16px; border-radius: 6px; color: #856404;">
+                        <strong>Results:</strong> <span id="errors-found"></span>
+                    </div>
+                </div>
+
+                <!-- HOW TO DISPUTE A BILL GUIDE -->
+                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border: 2px solid #667eea; border-radius: 10px; padding: 28px; margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">⚖️</span> How to Dispute a Bill
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <!-- Days to Act -->
+                        <div style="background: white; border-radius: 8px; padding: 16px; border-left: 4px solid #FF6B6B;">
+                            <div style="font-weight: 700; color: #FF6B6B; font-size: 0.9em; margin-bottom: 4px;">⏰ TIMING</div>
+                            <div style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Contact Within 60-90 Days</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">Act quickly. Most hospitals set deadlines for disputes. Don't delay.</div>
+                        </div>
+
+                        <!-- What to Provide -->
+                        <div style="background: white; border-radius: 8px; padding: 16px; border-left: 4px solid #667eea;">
+                            <div style="font-weight: 700; color: #667eea; font-size: 0.9em; margin-bottom: 4px;">📄 DOCUMENTATION</div>
+                            <div style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Provide Evidence</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">• Itemized bill<br>• EOB from insurance<br>• Hospital price transparency files<br>• Your comparison</div>
+                        </div>
+
+                        <!-- Escalation Path -->
+                        <div style="background: white; border-radius: 8px; padding: 16px; border-left: 4px solid #27AE60;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 0.9em; margin-bottom: 4px;">📞 ESCALATION</div>
+                            <div style="font-size: 1.1em; font-weight: 700; color: #333; margin-bottom: 8px;">Know Your Options</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">1. Hospital billing dept<br>2. Patient advocate<br>3. State insurance board<br>4. Attorney consultation</div>
+                        </div>
+                    </div>
+
+                    <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 20px; border-left: 5px solid #667eea;">
+                        <h4 style="font-weight: 700; color: #333; margin-bottom: 14px;">Dispute Process (Step-by-Step):</h4>
+                        <ol style="margin: 0 0 0 20px; color: #666; line-height: 2; font-size: 0.95em;">
+                            <li><strong>Contact hospital billing</strong> department by phone and email</li>
+                            <li><strong>State your claim</strong> clearly: "I believe I was overcharged for [procedure]"</li>
+                            <li><strong>Provide evidence:</strong> itemized bill, EOB, price comparisons</li>
+                            <li><strong>Request written response</strong> within 30 days</li>
+                            <li><strong>If unresolved:</strong> escalate to patient advocate or hospital ombudsman</li>
+                            <li><strong>File complaint</strong> with your state insurance commissioner if needed</li>
+                            <li><strong>Consider consultation</strong> with a patient advocate or attorney for large amounts</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- KNOW YOUR RIGHTS -->
+                <div style="background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.06) 100%); border: 2px solid #27AE60; border-radius: 10px; padding: 28px; margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3em; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">✓</span> Know Your Consumer Rights
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">📋 Right to Itemized Bill</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">Hospitals MUST provide line-by-line itemized bills within 30 days of request, per federal law.</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">💰 Right to Price Information</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">Under CMS Hospital Price Transparency Mandate, hospitals must post prices upfront online and in writing.</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">📞 Right to Appeal</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">You have the right to dispute and appeal bills through hospital processes and state regulators.</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">🔒 Right to Privacy</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">Your medical and financial information is protected under HIPAA and state privacy laws.</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">⚖️ Right to Advocate</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">You can bring an advocate, attorney, or family member to billing discussions.</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 700; color: #27AE60; font-size: 1em; margin-bottom: 8px;">📞 Right to Contact Regulators</div>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.5;">Report unfair billing practices to your state insurance commissioner or state attorney general.</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-top: 20px; border-left: 4px solid #27AE60;">
+                        <strong style="color: #27AE60;">🔗 Find Your State Resources</strong>
+                        <div style="font-size: 0.95em; color: #666; margin-top: 8px; line-height: 1.6;">
+                            Search online for: "[Your State] Insurance Commissioner" or "[Your State] Hospital Complaint Board"<br>
+                            <a href="https://www.naic.org/state_insurance_commissioners.htm" target="_blank" style="color: #667eea; font-weight: 600; text-decoration: none;">National Association of Insurance Commissioners →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USE OUR TOOL TO VERIFY -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 28px; margin-bottom: 30px; color: white; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+                    <h3 style="font-size: 1.3em; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">✓</span> Use Our Tool to Verify Charges
+                    </h3>
+
+                    <p style="margin-bottom: 20px; font-size: 1em; line-height: 1.6;">This website helps you compare your hospital bill to official posted prices. Here's how to use it:</p>
+
+                    <div style="background: rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 24px; border: 2px solid rgba(255, 255, 255, 0.3);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+                            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 16px; border-left: 4px solid white;">
+                                <div style="font-size: 2em; font-weight: 900; margin-bottom: 6px;">1️⃣</div>
+                                <div style="font-weight: 700; margin-bottom: 6px;">Select Hospital</div>
+                                <div style="font-size: 0.9em; opacity: 0.9;">Choose your hospital system or specific facility</div>
+                            </div>
+
+                            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 16px; border-left: 4px solid white;">
+                                <div style="font-size: 2em; font-weight: 900; margin-bottom: 6px;">2️⃣</div>
+                                <div style="font-weight: 700; margin-bottom: 6px;">Search Procedure</div>
+                                <div style="font-size: 0.9em; opacity: 0.9;">Find the procedure from your bill by name or CPT code</div>
+                            </div>
+
+                            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 16px; border-left: 4px solid white;">
+                                <div style="font-size: 2em; font-weight: 900; margin-bottom: 6px;">3️⃣</div>
+                                <div style="font-weight: 700; margin-bottom: 6px;">View Prices</div>
+                                <div style="font-size: 0.9em; opacity: 0.9;">See the official hospital posted price for that procedure</div>
+                            </div>
+
+                            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 16px; border-left: 4px solid white;">
+                                <div style="font-size: 2em; font-weight: 900; margin-bottom: 6px;">4️⃣</div>
+                                <div style="font-weight: 700; margin-bottom: 6px;">Compare</div>
+                                <div style="font-size: 0.9em; opacity: 0.9;">Your bill amount vs. posted price = evidence for dispute</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 16px; margin-top: 20px; border-left: 4px solid white;">
+                        <strong>💡 Pro Tip:</strong> If you're charged MORE than the official posted price, that's clear evidence of overcharging. Take a screenshot or print the page and use it in your dispute.
+                    </div>
+                </div>
+
+                <!-- DISCLAIMER -->
+                <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.08) 0%, rgba(243, 156, 18, 0.08) 100%); border: 2px dashed #FF6B6B; border-radius: 10px; padding: 24px; margin-bottom: 30px;">
+                    <h4 style="font-size: 1.1em; font-weight: 700; color: #d63031; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2em;">⚠️</span> Important Disclaimer
+                    </h4>
+                    <p style="color: #666; line-height: 1.6; font-size: 0.95em; margin: 0;">
+                        <strong style="color: #333;">This tool helps you understand hospital pricing.</strong> It is educational and informational only—not legal or medical advice. For specific billing disputes involving complex issues, consider consulting with a patient advocate, healthcare billing specialist, or attorney. Your state's patient advocacy organizations and insurance commissioner's office can provide additional resources.
+                    </p>
+                </div>
+
+                <!-- HELP SECTION - BILL VERIFICATION FAQ -->
+                <div class="help-section" style="margin-top: 30px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border-left: 4px solid #667eea;">
+                    <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M10 15v-5m0-2v0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        Billing Verification FAQs
+                    </h3>
+
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What if my hospital bill is way higher than the posted price?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                That's a potential red flag. Document the difference using this tool. Contact the hospital billing department and ask for an explanation. You may have been overcharged or coded incorrectly.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>Can hospitals charge more than their posted prices?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                Generally, no. The CMS Hospital Price Transparency Mandate requires hospitals to honor the prices they post. If you're charged more, that may violate federal requirements.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>How long can I wait to dispute a bill?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                Act within 60-90 days. Some hospitals set their own deadlines for disputes. Don't delay—the longer you wait, the harder it becomes to dispute. Contact them immediately upon noticing an error.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What's an "itemized bill" and how is it different from a summary?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                A summary bill shows totals by category. An itemized bill breaks down EVERY charge: each test, medication, facility fee, and service separately with dates and codes. Always request itemized.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What's "upcoding" and how do I catch it?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                Upcoding is when hospitals charge for a more expensive procedure than what you actually received. For example, billing for an MRI when you had an X-ray. Use this tool to check if the CPT code on your bill matches what you received.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What are "hydration" IV fees and why are they often fraudulent?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                IV hydration (saline drip) can only be billed if administered for at least 31 consecutive minutes. Hospitals often bill this even for quick procedures where hydration lasted seconds. If you were in and out, challenge this charge.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>Can I get financial assistance if I can't pay?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                Yes. Hospitals must offer financial assistance programs (charity care). Ask for the hospital's financial assistance policy. You may qualify for discounts or payment plans based on income.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What if the hospital refuses to address my dispute?</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                Escalate: (1) Ask for the patient advocate/ombudsman, (2) File a complaint with your state insurance commissioner, (3) Contact your state attorney general's office, (4) Consult with an attorney.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="help-section">
                 <h3>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1523,6 +1934,18 @@
         let currentSearch = '';
         let currentSystem = 'OhioHealth';
         let savedHospitals = [];
+
+        // Billing errors checklist items
+        const billingErrors = [
+            { id: 'duplicates', label: 'Duplicate charges for medications or tests', description: 'Same procedure or medication billed multiple times' },
+            { id: 'services', label: 'Charges for services not rendered', description: 'You were billed for procedures you didn\'t receive' },
+            { id: 'upcoding', label: '"Upcoding" to more expensive service', description: 'Charged for expensive service, received cheaper alternative' },
+            { id: 'hydration', label: 'Unnecessary "hydration" or IV fees', description: 'Saline IV fees without meeting 31-minute minimum requirement' },
+            { id: 'room', label: 'Room charges that don\'t match length of stay', description: 'Billed for more days or higher level room than used' },
+            { id: 'facility', label: 'Multiple facility fees for single visit', description: 'Charged multiple facility or equipment fees for one procedure' },
+            { id: 'exceeds', label: 'Charges that exceed hospital\'s posted price', description: 'Bill amount higher than official price transparency posted price' },
+            { id: 'unlisted', label: 'Unlisted or unexplained charges', description: 'Charges with no description or unclear what they are for' }
+        ];
 
         const hospitalSystems = {
             OhioHealth: [
@@ -1775,10 +2198,58 @@
             });
         });
 
+        // Initialize billing errors checklist
+        function initializeChecklist() {
+            const checklistContainer = document.getElementById('error-checklist');
+            if (!checklistContainer) return;
+
+            checklistContainer.innerHTML = billingErrors.map((error, index) => `
+                <label class="checklist-item" data-error-id="${error.id}">
+                    <input type="checkbox" class="error-checkbox" data-error-id="${error.id}" />
+                    <div style="flex: 1;">
+                        <div class="checklist-label">${error.label}</div>
+                        <div class="checklist-description">${error.description}</div>
+                    </div>
+                </label>
+            `).join('');
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.error-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const label = e.target.closest('.checklist-item');
+                    if (e.target.checked) {
+                        label.classList.add('checked');
+                    } else {
+                        label.classList.remove('checked');
+                    }
+                    updateChecklistResults();
+                });
+            });
+        }
+
+        // Update checklist results display
+        function updateChecklistResults() {
+            const checkedBoxes = document.querySelectorAll('.error-checkbox:checked').length;
+            const resultsDiv = document.getElementById('checklist-results');
+            const errorsFoundSpan = document.getElementById('errors-found');
+
+            if (checkedBoxes > 0) {
+                resultsDiv.style.display = 'block';
+                if (checkedBoxes === 1) {
+                    errorsFoundSpan.textContent = `You found 1 potential billing error. Review the "How to Dispute a Bill" section below for next steps.`;
+                } else {
+                    errorsFoundSpan.textContent = `You found ${checkedBoxes} potential billing errors. Review each carefully and gather evidence before disputing.`;
+                }
+            } else {
+                resultsDiv.style.display = 'none';
+            }
+        }
+
         window.addEventListener('load', () => {
             loadSavedHospitals();
             updateHospitalDropdown(currentSystem);
             loadProcedures();
+            initializeChecklist();
         });
     </script>
 </body>
