@@ -358,6 +358,158 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Tooltip and Help Styling */
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.75em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .help-icon:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: white;
+            text-align: left;
+            border-radius: 6px;
+            padding: 12px 14px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: -60px;
+            width: 220px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 0.85em;
+            line-height: 1.4;
+            font-weight: normal;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 75px;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .help-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+
+        .help-section h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: white;
+            padding: 14px 16px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: color 0.3s ease;
+        }
+
+        .faq-item:hover .faq-question {
+            color: #667eea;
+        }
+
+        .faq-toggle {
+            font-size: 1.2em;
+            color: #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.expanded .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .faq-item.expanded .faq-answer {
+            max-height: 500px;
+            padding-top: 12px;
+            border-top: 1px solid #e9ecef;
+            margin-top: 12px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-placeholder-hint {
+            font-size: 0.8em;
+            color: #999;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8em;
@@ -375,6 +527,11 @@
             .modal-content {
                 margin: 20px;
                 padding: 25px;
+            }
+
+            .tooltip-text {
+                left: -90px;
+                width: 200px;
             }
         }
     </style>
@@ -425,7 +582,13 @@
             </div>
 
             <div class="control-group">
-                <label for="hospital-select">Select Hospital</label>
+                <label for="hospital-select">
+                    Select Hospital
+                    <span class="tooltip-container help-icon">
+                        ?
+                        <span class="tooltip-text">Select a hospital system or location to view procedures and pricing</span>
+                    </span>
+                </label>
                 <select id="hospital-select" class="hospital-select">
                     <option value="">All Hospitals</option>
                     <!-- OhioHealth Hospitals -->
@@ -464,7 +627,13 @@
             </div>
 
             <div class="control-group">
-                <label>Procedure Category</label>
+                <label>
+                    Procedure Category
+                    <span class="tooltip-container help-icon">
+                        ?
+                        <span class="tooltip-text">Filter procedures by type (Surgical, Imaging, Lab, etc.)</span>
+                    </span>
+                </label>
                 <div class="category-buttons">
                     <button class="category-btn active" data-category="Surgical">Surgical</button>
                     <button class="category-btn" data-category="Imaging">Imaging</button>
@@ -479,8 +648,64 @@
             </div>
 
             <div class="control-group">
-                <label for="search">Search Procedures</label>
-                <input type="text" id="search" class="search-input" placeholder="Type procedure name...">
+                <label for="search">
+                    Search Procedures
+                    <span class="tooltip-container help-icon">
+                        ?
+                        <span class="tooltip-text">Type a procedure name to find prices (e.g., 'MRI', 'Blood Test', 'Knee Surgery')</span>
+                    </span>
+                </label>
+                <input type="text" id="search" class="search-input" placeholder="Try: 'MRI', 'CT Scan', 'Blood Test'">
+                <p class="search-placeholder-hint">💡 Tip: Search by procedure name or CPT code</p>
+            </div>
+
+            <!-- Help & FAQ Section -->
+            <div class="help-section">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M10 15v-5m0-2v0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    Frequently Asked Questions
+                </h3>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I search for procedures?</span>
+                            <span class="faq-toggle">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Start typing a procedure name in the search box (e.g., "MRI", "Blood Test", "Knee Surgery"). You can also search by CPT code. Results update instantly as you type.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What data is included in this tool?</span>
+                            <span class="faq-toggle">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            This tool displays pricing data from official hospital transparency files for OhioHealth, OSU, and Mount Carmel hospital systems. Prices include facility and professional charges for standard procedures.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I compare prices across hospitals?</span>
+                            <span class="faq-toggle">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! Click on any procedure to see a comparison of prices across all hospitals. You can also filter by category, hospital system, or select a specific hospital to see just their procedures.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How current is this data?</span>
+                            <span class="faq-toggle">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Pricing data comes from hospital transparency files. For the most current pricing, especially for insurance verification or billing purposes, we recommend contacting the hospital directly.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -716,6 +941,13 @@
             if (e.target === document.getElementById('procedure-modal')) {
                 closeModal();
             }
+        });
+
+        // FAQ Toggle functionality
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('expanded');
+            });
         });
 
         // Load procedures on page load
