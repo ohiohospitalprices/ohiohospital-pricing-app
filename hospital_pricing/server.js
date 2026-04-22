@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ensure homepage route is properly configured for Render deployment
+// CMS Standards & Resources update deployed: 2026-04-22
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, '.')));
