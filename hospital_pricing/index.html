@@ -751,6 +751,141 @@
             color: #667eea;
         }
 
+        /* CREDIBILITY SECTION - WHY WE EXIST */
+        .credibility-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 28px;
+            margin: 30px 0;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1);
+        }
+
+        .credibility-icon {
+            font-size: 2.2em;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            color: white;
+        }
+
+        .credibility-headline {
+            font-size: 1.35em;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credibility-body {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #444;
+            margin: 0;
+        }
+
+        /* CMS COMPLIANCE BADGE */
+        .cms-badge {
+            background: white;
+            border: 2px solid #27AE60;
+            border-radius: 8px;
+            padding: 14px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.15);
+        }
+
+        .cms-badge:hover {
+            border-color: #1e8449;
+            box-shadow: 0 4px 16px rgba(39, 174, 96, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .cms-badge-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .cms-badge-icon {
+            font-size: 1.8em;
+            color: #27AE60;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .cms-badge-label {
+            font-weight: 700;
+            color: #27AE60;
+            font-size: 0.95em;
+        }
+
+        .cms-badge-text {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        /* ENFORCEMENT BOX */
+        .enforcement-box {
+            background: white;
+            border: 2px solid #d63031;
+            border-radius: 8px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(214, 48, 49, 0.1);
+        }
+
+        .enforcement-box p {
+            margin: 0;
+        }
+
+        /* MOBILE RESPONSIVENESS FOR CREDIBILITY */
+        @media (max-width: 768px) {
+            .credibility-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .credibility-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.8em;
+            }
+
+            .credibility-headline {
+                font-size: 1.2em;
+            }
+
+            .credibility-body {
+                font-size: 0.9em;
+            }
+
+            .cms-badge, .enforcement-box {
+                padding: 12px;
+            }
+
+            .cms-badge-label {
+                font-size: 0.9em;
+            }
+
+            .cms-badge-text {
+                font-size: 0.75em;
+            }
+        }
+
         /* BOOKMARK FEATURE */
         .bookmark-btn {
             display: inline-flex;
@@ -956,6 +1091,47 @@
                 </div>
                 <div style="font-size: 0.95em; font-weight: 600; color: #333; margin-bottom: 14px;">— Ilaria Santangelo, Patient Advocate</div>
                 <button class="story-cta" onclick="alert('Compare prices now to avoid surprise bills!')">✓ Avoid Surprise Bills - Compare Now</button>
+            </div>
+
+            <!-- FEATURE 4: WHY WE EXIST - FEDERAL LAW CREDIBILITY SECTION -->
+            <div class="credibility-section">
+                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
+                    <div class="credibility-icon">⚖️</div>
+                    <div>
+                        <h3 class="credibility-headline">Federal Law Requires Price Transparency</h3>
+                        <p class="credibility-body">
+                            Starting January 1, 2021, all U.S. hospitals are required by the Centers for Medicare & Medicaid Services (CMS) to post upfront pricing for all items and services. This tool aggregates that data, making it accessible and comparable for Ohio residents. <strong>You have the RIGHT to know what healthcare costs BEFORE you receive care.</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <!-- CMS Compliance Badge -->
+                    <a href="https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency" target="_blank" class="cms-badge">
+                        <div class="cms-badge-content">
+                            <div class="cms-badge-icon">✓</div>
+                            <div style="text-align: left;">
+                                <div class="cms-badge-label">CMS Compliant</div>
+                                <div class="cms-badge-text">Hospital Price Transparency Mandate (Jan 1, 2021)</div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Enforcement Statement -->
+                    <div class="enforcement-box">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.2em;">⚠️</span>
+                            <div style="font-weight: 700; color: #d63031;">Enforcement</div>
+                        </div>
+                        <p style="font-size: 0.9em; line-height: 1.5; color: #555;">
+                            Hospitals that fail to comply face civil monetary penalties. CMS audits hospital pricing compliance regularly.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.85em; color: #666; border-top: 1px solid #ddd; padding-top: 12px; text-align: center;">
+                    📋 Learn more at <a href="https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency" target="_blank" style="color: #667eea; font-weight: 600;">CMS Hospital Price Transparency Initiative</a>
+                </div>
             </div>
 
             <div class="help-section">
