@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import time
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__)
 CORS(app)
 
 # Configuration
@@ -51,10 +51,14 @@ def dict_from_row(row):
         return None
     return dict(row)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def serve_index():
     """Serve the optimized index.html"""
-    return send_from_directory('.', 'index.html')
+    try:
+        with open('index.html', 'r', encoding='utf-8') as f:
+            return f.read(), 200, {'Content-Type': 'text/html'}
+    except FileNotFoundError:
+        return jsonify({'error': 'index.html not found'}), 404
 
 @app.route('/test')
 def test():
