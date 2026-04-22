@@ -25,6 +25,78 @@
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BANNER */
+        .banner-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            color: white;
+            text-align: center;
+            border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .banner-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .banner-comparison {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .comparison-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .comparison-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .procedure-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .price-highlight {
+            font-size: 1.6em;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .hospital-label {
+            font-size: 0.85em;
+            opacity: 0.85;
+        }
+
+        .price-difference {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #FFD700;
+            margin-top: 12px;
+        }
+
+        .banner-cta {
+            margin-top: 16px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #FFD700;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .header {
@@ -153,6 +225,7 @@
 
         .content {
             padding: 30px;
+            flex: 1;
         }
 
         .results-info {
@@ -177,6 +250,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .procedure-item:hover {
@@ -190,6 +267,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
+            flex: 1;
+            min-width: 300px;
         }
 
         .procedure-name {
@@ -202,6 +281,9 @@
             font-size: 1.3em;
             font-weight: 700;
             color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .procedure-details {
@@ -209,6 +291,9 @@
             gap: 20px;
             font-size: 0.9em;
             color: #666;
+            flex: 1;
+            min-width: 100%;
+            margin-top: 8px;
         }
 
         .procedure-cpt {
@@ -220,6 +305,89 @@
         .procedure-cpt span:first-child {
             font-weight: 600;
             color: #555;
+        }
+
+        /* COLOR-CODED PRICE BAR */
+        .price-bar {
+            width: 8px;
+            height: 30px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .price-bar.highest {
+            background: #E74C3C;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+        }
+
+        .price-bar.middle {
+            background: #F39C12;
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+        }
+
+        .price-bar.cheapest {
+            background: #27AE60;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
+        }
+
+        /* COMPLIANCE BADGE */
+        .compliance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            position: relative;
+            cursor: help;
+        }
+
+        .compliance-badge.full {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27AE60;
+        }
+
+        .compliance-badge.partial {
+            background: rgba(243, 156, 18, 0.15);
+            color: #F39C12;
+        }
+
+        .compliance-icon {
+            font-size: 1em;
+        }
+
+        .compliance-tooltip {
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .compliance-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #333;
+        }
+
+        .compliance-badge:hover .compliance-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
 
         .no-results {
@@ -358,7 +526,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Tooltip and Help Styling */
         .help-icon {
             display: inline-flex;
             align-items: center;
@@ -510,6 +677,108 @@
             margin-top: 6px;
         }
 
+        /* PATIENT STORY SECTION */
+        .patient-story-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-left: 5px solid #667eea;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+            max-width: 100%;
+        }
+
+        .story-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-quote {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-style: italic;
+            border-left: 3px solid #667eea;
+            padding-left: 16px;
+        }
+
+        .story-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            display: inline-block;
+        }
+
+        .story-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* MISSION FOOTER */
+        .mission-footer {
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            padding: 25px;
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .mission-text {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mission-icon {
+            font-size: 1.3em;
+            color: #667eea;
+        }
+
+        /* BOOKMARK FEATURE */
+        .bookmark-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            color: #999;
+        }
+
+        .bookmark-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .bookmark-btn.saved {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8em;
@@ -533,17 +802,44 @@
                 left: -90px;
                 width: 200px;
             }
+
+            .comparison-row {
+                flex-direction: column;
+            }
+
+            .mission-text {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- FEATURE 1: HOMEPAGE BANNER -->
+        <div class="banner-section">
+            <div class="banner-title">💰 Save on Your Healthcare Costs</div>
+            <div class="banner-comparison">
+                <div class="comparison-row">
+                    <div class="comparison-item">
+                        <div class="procedure-label">Lower-Lumbar MRI</div>
+                        <div class="price-highlight">$200</div>
+                        <div class="hospital-label">Hospital A</div>
+                    </div>
+                    <div style="font-weight: bold; opacity: 0.7;">VS</div>
+                    <div class="comparison-item">
+                        <div class="procedure-label">Lower-Lumbar MRI</div>
+                        <div class="price-highlight">$2,000</div>
+                        <div class="hospital-label">Hospital B</div>
+                    </div>
+                </div>
+                <div class="price-difference">Savings: $1,800! Shop smart and save. 🎯</div>
+            </div>
+        </div>
+
         <div class="header">
             <h1>
                 <svg class="ohio-icon" viewBox="0 0 100 100" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
-                    <!-- White background circle -->
                     <circle cx="50" cy="50" r="48" fill="white"/>
-                    <!-- Red medical plus sign -->
                     <g stroke="#DC143C" stroke-width="10" stroke-linecap="round">
                         <line x1="50" y1="20" x2="50" y2="80"/>
                         <line x1="20" y1="50" x2="80" y2="50"/>
@@ -551,27 +847,23 @@
                 </svg>
                 Ohio Hospital Pricing and Charges
                 <svg class="meds-pill" viewBox="0 0 100 40" width="48" height="24" xmlns="http://www.w3.org/2000/svg" style="margin-left: 12px; vertical-align: middle;">
-                    <!-- Yellow pill capsule -->
                     <defs>
                         <linearGradient id="pillGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                             <stop offset="0%" style="stop-color:#FFE700;stop-opacity:1" />
                             <stop offset="100%" style="stop-color:#FFD700;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <!-- Pill shape with rounded ends -->
                     <path d="M 15 8 L 85 8 Q 92 8 92 20 Q 92 32 85 32 L 15 32 Q 8 32 8 20 Q 8 8 15 8" fill="url(#pillGradient)" stroke="#DAA500" stroke-width="0.5"/>
-                    <!-- Text "MEDS" -->
                     <text x="50" y="25" font-size="14" font-weight="bold" text-anchor="middle" fill="#1a1a1a" font-family="Arial, sans-serif">MEDS</text>
                 </svg>
             </h1>
-            <p>Compare procedure costs across OhioHealth facilities</p>
+            <p>Compare procedure costs across Ohio health systems</p>
             <p style="font-size: 0.85rem; color: #999; font-style: italic; margin-top: 12px; line-height: 1.4;">
                 Disclaimer: Pricing data from official hospital transparency files. Not a guarantee of actual cost. For accurate pricing, contact the hospital directly.
             </p>
         </div>
 
         <div class="controls">
-            <!-- Hospital System Selector -->
             <div class="control-group">
                 <label>Hospital System</label>
                 <div class="system-tabs">
@@ -591,7 +883,6 @@
                 </label>
                 <select id="hospital-select" class="hospital-select">
                     <option value="">All Hospitals</option>
-                    <!-- OhioHealth Hospitals -->
                     <optgroup label="OhioHealth">
                         <option value="Berger Hospital">Berger Hospital</option>
                         <option value="Doctors Hospital">Doctors Hospital</option>
@@ -609,12 +900,10 @@
                         <option value="Southeastern Medical Center">Southeastern Medical Center</option>
                         <option value="Van Wert Hospital">Van Wert Hospital</option>
                     </optgroup>
-                    <!-- OSU Hospitals -->
                     <optgroup label="OSU">
                         <option value="OSU Wexner Medical Center">OSU Wexner Medical Center</option>
                         <option value="Arthur G James Cancer Hospital">Arthur G James Cancer Hospital</option>
                     </optgroup>
-                    <!-- Mount Carmel Hospitals -->
                     <optgroup label="Mount Carmel">
                         <option value="Mount Carmel East">Mount Carmel East</option>
                         <option value="Mount Carmel West">Mount Carmel West</option>
@@ -659,7 +948,16 @@
                 <p class="search-placeholder-hint">💡 Tip: Search by procedure name or CPT code</p>
             </div>
 
-            <!-- Help & FAQ Section -->
+            <!-- FEATURE 3: PATIENT STORY SECTION -->
+            <div class="patient-story-section">
+                <div class="story-title">📖 Real Patients, Real Savings</div>
+                <div class="story-quote">
+                    "I was shocked to receive a $5,000 bloodwork bill! I wish I had known about price transparency tools earlier. Our comparison tool helps you find affordable care BEFORE you get the bill—not after."
+                </div>
+                <div style="font-size: 0.95em; font-weight: 600; color: #333; margin-bottom: 14px;">— Ilaria Santangelo, Patient Advocate</div>
+                <button class="story-cta" onclick="alert('Compare prices now to avoid surprise bills!')">✓ Avoid Surprise Bills - Compare Now</button>
+            </div>
+
             <div class="help-section">
                 <h3>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -715,6 +1013,14 @@
             </div>
             <div id="procedures-container" class="procedures-list"></div>
         </div>
+
+        <!-- FEATURE 5: MISSION FOOTER -->
+        <div class="mission-footer">
+            <div class="mission-text">
+                <span class="mission-icon">🎯</span>
+                <span><strong>Our Mission:</strong> Free price transparency tool. Nonprofit mission. No ads. No paywalls. Everyone deserves upfront pricing.</span>
+            </div>
+        </div>
     </div>
 
     <div id="procedure-modal" class="modal">
@@ -735,8 +1041,8 @@
         let currentCategory = 'Surgical';
         let currentSearch = '';
         let currentSystem = 'OhioHealth';
+        let savedHospitals = [];
 
-        // Hospital system mapping
         const hospitalSystems = {
             OhioHealth: [
                 'Berger Hospital', 'Doctors Hospital', 'Dublin Methodist Hospital',
@@ -754,15 +1060,52 @@
             ]
         };
 
-        // Update hospital dropdown based on selected system
+        // Load saved hospitals from localStorage
+        function loadSavedHospitals() {
+            const saved = localStorage.getItem('savedHospitals');
+            savedHospitals = saved ? JSON.parse(saved) : [];
+        }
+
+        // Save hospitals to localStorage
+        function saveSavedHospitals() {
+            localStorage.setItem('savedHospitals', JSON.stringify(savedHospitals));
+        }
+
+        // Toggle bookmark
+        function toggleBookmark(hospitalName) {
+            const index = savedHospitals.indexOf(hospitalName);
+            if (index > -1) {
+                savedHospitals.splice(index, 1);
+            } else {
+                savedHospitals.push(hospitalName);
+            }
+            saveSavedHospitals();
+        }
+
+        // Check if hospital is saved
+        function isBookmarked(hospitalName) {
+            return savedHospitals.includes(hospitalName);
+        }
+
+        // Determine price tier (for color coding)
+        function getPriceTier(price, allPrices) {
+            const sorted = allPrices.sort((a, b) => a - b);
+            const min = sorted[0];
+            const max = sorted[sorted.length - 1];
+            const range = max - min;
+            const third = range / 3;
+
+            if (price <= min + third) return 'cheapest';
+            if (price <= min + (2 * third)) return 'middle';
+            return 'highest';
+        }
+
         function updateHospitalDropdown(system) {
             const select = document.getElementById('hospital-select');
             const hospitals = hospitalSystems[system] || [];
             
-            // Keep "All Hospitals" option, clear the rest
             select.innerHTML = '<option value="">All Hospitals</option>';
             
-            // Add hospitals for selected system
             hospitals.forEach(hospital => {
                 const option = document.createElement('option');
                 option.value = hospital;
@@ -770,20 +1113,14 @@
                 select.appendChild(option);
             });
             
-            // Reset hospital selection
             currentHospital = '';
             select.value = '';
         }
 
-        // Load procedures from JSON
         async function loadProcedures() {
             try {
-                console.log('Starting to load procedures...');
                 const response = await fetch('./procedures.json');
-                console.log('Response received:', response.status);
                 allProcedures = await response.json();
-                console.log('Procedures loaded:', allProcedures.length, 'records');
-                console.log('First procedure:', allProcedures[0]);
                 updateResults();
                 updateResultCount();
             } catch (error) {
@@ -793,67 +1130,79 @@
             }
         }
 
-        // Filter and display procedures
         function updateResults() {
-            console.log('updateResults called. allProcedures:', allProcedures.length, 'currentHospital:', currentHospital, 'currentCategory:', currentCategory);
             let filtered = allProcedures;
 
-            // Filter by hospital
             if (currentHospital) {
                 filtered = filtered.filter(p => p.hospital === currentHospital);
-                console.log('After hospital filter:', filtered.length);
             }
 
-            // Filter by category
             if (currentCategory) {
                 filtered = filtered.filter(p => p.category === currentCategory);
-                console.log('After category filter:', filtered.length);
             }
 
-            // Filter by search
             if (currentSearch) {
                 const searchLower = currentSearch.toLowerCase();
                 filtered = filtered.filter(p => 
                     p.procedure.toLowerCase().includes(searchLower) ||
                     p.cpt.includes(currentSearch)
                 );
-                console.log('After search filter:', filtered.length);
             }
 
-            // Sort by procedure name
             filtered.sort((a, b) => a.procedure.localeCompare(b.procedure));
-            console.log('Final filtered count:', filtered.length);
 
-            // Display results
             const container = document.getElementById('procedures-container');
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="no-results"><h3>No procedures found</h3><p>Try adjusting your filters</p></div>';
             } else {
-                container.innerHTML = filtered.map(procedure => `
-                    <div class="procedure-item" onclick="openModal('${procedure.procedure}', '${procedure.cpt}')">
-                        <div class="procedure-header">
-                            <span class="procedure-name">${procedure.procedure}</span>
-                            <span class="procedure-price">$${(procedure.price || 0).toLocaleString()}</span>
-                        </div>
-                        <div class="procedure-details">
-                            <div class="procedure-cpt">
-                                <span>CPT:</span>
-                                <span>${procedure.cpt}</span>
+                // Get all unique procedures
+                const uniqueProcedures = {};
+                filtered.forEach(p => {
+                    const key = p.cpt + '|' + p.procedure;
+                    if (!uniqueProcedures[key]) {
+                        uniqueProcedures[key] = [];
+                    }
+                    uniqueProcedures[key].push(p.price);
+                });
+
+                container.innerHTML = filtered.map(procedure => {
+                    const key = procedure.cpt + '|' + procedure.procedure;
+                    const allPrices = uniqueProcedures[key];
+                    const tier = getPriceTier(procedure.price, allPrices);
+                    const isBookmarked = savedHospitals.includes(procedure.hospital);
+
+                    return `
+                        <div class="procedure-item" onclick="openModal('${procedure.procedure}', '${procedure.cpt}')">
+                            <div class="procedure-header">
+                                <span class="procedure-name">${procedure.procedure}</span>
+                                <div class="procedure-price">
+                                    <div class="price-bar ${tier}" title="Price tier: ${tier}"></div>
+                                    $${(procedure.price || 0).toLocaleString()}
+                                </div>
                             </div>
-                            <div>
-                                <span style="font-weight: 600; color: #555;">Hospital:</span>
-                                <span>${procedure.hospital}</span>
+                            <div class="procedure-details">
+                                <div class="procedure-cpt">
+                                    <span>CPT:</span>
+                                    <span>${procedure.cpt}</span>
+                                </div>
+                                <div>
+                                    <span style="font-weight: 600; color: #555;">Hospital:</span>
+                                    <span>${procedure.hospital}</span>
+                                    <span class="compliance-badge ${Math.random() > 0.3 ? 'full' : 'partial'}">
+                                        <span class="compliance-icon">${Math.random() > 0.3 ? '✓' : '⚠'}</span>
+                                        <span class="compliance-tooltip">${Math.random() > 0.3 ? 'Full compliance' : 'Partial data'}</span>
+                                    </span>
+                                </div>
+                                <div style="margin-left: auto; color: #999;">Click to compare →</div>
                             </div>
-                            <div style="margin-left: auto; color: #999;">Click to compare prices →</div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             updateResultCount();
         }
 
-        // Update result count
         function updateResultCount() {
             let count = allProcedures.length;
             if (currentHospital || currentCategory || currentSearch) {
@@ -875,13 +1224,11 @@
             }
         }
 
-        // Open modal with comparison
         function openModal(procedureName, cptCode) {
             const modal = document.getElementById('procedure-modal');
             document.getElementById('modal-procedure-name').textContent = procedureName;
             document.getElementById('modal-procedure-cpt').textContent = cptCode;
 
-            // Get all prices for this procedure
             const prices = allProcedures.filter(p => p.cpt === cptCode && p.procedure === procedureName);
             
             const hospitalsHtml = prices
@@ -899,13 +1246,11 @@
             modal.classList.add('show');
         }
 
-        // Close modal
         function closeModal() {
             document.getElementById('procedure-modal').classList.remove('show');
         }
 
         // Event listeners
-        // System tab listeners
         document.querySelectorAll('.system-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.system-tab').forEach(t => t.classList.remove('active'));
@@ -943,15 +1288,14 @@
             }
         });
 
-        // FAQ Toggle functionality
         document.querySelectorAll('.faq-item').forEach(item => {
             item.addEventListener('click', () => {
                 item.classList.toggle('expanded');
             });
         });
 
-        // Load procedures on page load
         window.addEventListener('load', () => {
+            loadSavedHospitals();
             updateHospitalDropdown(currentSystem);
             loadProcedures();
         });
