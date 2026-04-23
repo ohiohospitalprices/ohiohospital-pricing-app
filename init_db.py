@@ -199,7 +199,12 @@ def get_database_stats(conn):
     cursor.execute('SELECT COUNT(*) FROM hospitals')
     hospital_count = cursor.fetchone()[0]
     
-    cursor.execute('SELECT COUNT(*) FROM procedures')
+    cursor.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='view' AND name='procedures'")
+    has_view = cursor.fetchone()[0] > 0
+    if has_view:
+        cursor.execute('SELECT COUNT(*) FROM procedures_table')
+    else:
+        cursor.execute('SELECT COUNT(*) FROM procedures')
     procedure_count = cursor.fetchone()[0]
     
     cursor.execute('SELECT COUNT(*) FROM pricing')
@@ -222,6 +227,52 @@ def get_database_stats(conn):
     if min_price and max_price:
         print(f"Price Range:     ${min_price:,.2f} - ${max_price:,.2f}")
     print("="*50 + "\n")
+
+def create_flattened_view(conn):
+    """
+    Create a flattened VIEW 'procedures' for app.py compatibility.
+    App.py expects: id, hospital, procedure_name, cpt_code, category, price, updated_date
+    The view joins: hospitals + procedures_table + pricing to produce that schema.
+    """
+    cursor = conn.cursor()
+
+    # Drop old view if exists
+    try:
+        cursor.execute("DROP VIEW IF EXISTS procedures")
+    except sqlite3.OperationalError:
+        pass
+
+    # Rename the procedures TABLE to procedures_table (if not already renamed)
+    try:
+        cursor.execute("ALTER TABLE procedures RENAME TO procedures_table")
+        print("[OK] Renamed procedures table -> procedures_table")
+    except sqlite3.OperationalError:
+        # Already renamed or view exists - that's fine
+        pass
+
+    # Create flattened VIEW named 'procedures' (app.py queries this name)
+    cursor.execute('''
+        CREATE VIEW IF NOT EXISTS procedures AS
+        SELECT
+            pr.id,
+            pr.hospital_id,
+            h.name AS hospital,
+            p.name AS procedure_name,
+            p.cpt AS cpt_code,
+            p.category,
+            pr.price,
+            pr.created_at AS updated_date
+        FROM pricing pr
+        JOIN hospitals h ON pr.hospital_id = h.id
+        JOIN procedures_table p ON pr.procedure_id = p.id
+    ''')
+
+    conn.commit()
+
+    # Verify the view works
+    cursor.execute("SELECT COUNT(*) FROM procedures")
+    count = cursor.fetchone()[0]
+    print(f"[OK] Flattened VIEW 'procedures' created with {count} records")
 
 def init_database():
     """Initialize the database"""
@@ -253,6 +304,7 @@ def init_database():
         create_tables(conn)
         load_data(conn)
         create_indices(conn)
+        create_flattened_view(conn)
         get_database_stats(conn)
         conn.close()
         print("[OK] Database initialization complete!")
