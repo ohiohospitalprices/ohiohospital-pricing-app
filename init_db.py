@@ -288,6 +288,8 @@ def init_database():
             cursor = conn.cursor()
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='pricing'")
             if cursor.fetchone():
+                # Ensure the flattened VIEW exists (may be missing from prior builds)
+                create_flattened_view(conn)
                 get_database_stats(conn)
                 conn.close()
                 return True
