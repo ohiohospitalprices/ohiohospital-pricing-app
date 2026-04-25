@@ -1,0 +1,11 @@
+*.db
+*.csv
+*.zip
+!hospital_pricing.zip
+hospital_data/
+__pycache__/
+*.pyc
+.crdownload
+*.json
+!static/hospitals.json
+!requirements.txt
