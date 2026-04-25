@@ -3270,7 +3270,11 @@
             <div class="modal-cpt">
                 <strong>CPT Code:</strong> <span id="modal-procedure-cpt"></span>
             </div>
-            <h3>Prices at All OhioHealth Hospitals</h3>
+            <h3>Prices Across All Ohio Hospitals</h3>
+            <div style="margin-bottom: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="compare-filter" placeholder="Filter hospitals..." style="flex: 1; min-width: 150px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px;" oninput="filterCompare()">
+                <span id="compare-count" style="font-size: 0.85em; color: #666;"></span>
+            </div>
             <div id="modal-hospitals" class="hospital-prices"></div>
         </div>
     </div>
@@ -3628,41 +3632,73 @@
             return div.innerHTML;
         }
 
+        let currentCompareData = [];
+
         function openModal(procedureName, cptCode) {
             const modal = document.getElementById('procedure-modal');
             document.getElementById('modal-procedure-name').textContent = procedureName;
             document.getElementById('modal-procedure-cpt').textContent = cptCode;
+            document.getElementById('compare-filter').value = '';
 
-            // Fetch all prices for this procedure from the API
+            // Fetch using the dedicated procedure comparison endpoint
             const modalHospitals = document.getElementById('modal-hospitals');
             modalHospitals.innerHTML = '<div class="no-results"><p>Loading prices...</p></div>';
             modal.classList.add('show');
 
-            fetch('/api/procedures?cpt=' + encodeURIComponent(cptCode))
+            fetch('/api/procedure/' + encodeURIComponent(cptCode))
                 .then(r => r.json())
                 .then(data => {
-                    const raw = data.procedures || [];
-                    const prices = raw.map(p => ({
-                        cpt: p.cpt || p.cpt_code || '',
-                        procedure: p.procedure || p.procedure_name || '',
+                    const raw = data.prices || [];
+                    currentCompareData = raw.map(p => ({
+                        cpt: p.cpt_code || '',
+                        procedure: p.procedure_name || '',
                         hospital: p.hospital || '',
                         price: p.price || 0
-                    })).filter(p => p.procedure === procedureName);
-                    const hospitalsHtml = prices
-                        .sort((a, b) => (a.price || 0) - (b.price || 0))
-                        .map(p => `
-                            <div class="hospital-price${currentHospital === p.hospital ? ' current' : ''}">
-                                <span class="hospital-name">${escapeHtml(p.hospital)}</span>
-                                <span class="hospital-price-amount">$${(p.price || 0).toLocaleString()}</span>
-                            </div>
-                        `).join('');
+                    })).sort((a, b) => (a.price || 0) - (b.price || 0));
 
-                    modalHospitals.innerHTML = hospitalsHtml || 
-                        '<div class="no-results"><p>No pricing data available</p></div>';
+                    renderCompareTable(currentCompareData);
                 })
                 .catch(() => {
                     modalHospitals.innerHTML = '<div class="no-results"><p>Error loading pricing data</p></div>';
                 });
+        }
+
+        function renderCompareTable(data) {
+            const modalHospitals = document.getElementById('modal-hospitals');
+            const filter = (document.getElementById('compare-filter').value || '').toLowerCase();
+            const filtered = filter ? data.filter(p => p.hospital.toLowerCase().includes(filter)) : data;
+
+            document.getElementById('compare-count').textContent = filtered.length + ' of ' + data.length + ' hospitals';
+
+            const cheapest = filtered.length > 0 ? filtered[0].price : 0;
+            const highest = filtered.length > 0 ? filtered[filtered.length - 1].price : 0;
+            const range = highest - cheapest;
+
+            modalHospitals.innerHTML = filtered.map(p => {
+                const price = p.price || 0;
+                const isCheapest = price === cheapest && filtered.length > 1;
+                const isCurrent = p.hospital === currentHospital;
+                let barWidth = 0;
+                if (range > 0) {
+                    barWidth = ((price - cheapest) / range) * 100;
+                }
+                return `
+                    <div class="hospital-price${isCurrent ? ' current' : ''}">
+                        <span class="hospital-name">${isCheapest ? '🏆 ' : ''}${escapeHtml(p.hospital)}${isCurrent ? ' (selected)' : ''}</span>
+                        <span class="hospital-price-amount" style="font-weight: ${isCheapest ? '700' : 'normal'}; color: ${isCheapest ? '#27AE60' : '#c39678'}">
+                            $${price.toLocaleString()}
+                        </span>
+                        <div style="clear: both;"></div>
+                        <div style="height: 4px; background: #eee; border-radius: 2px; margin-top: 4px;">
+                            <div style="height: 4px; width: ${barWidth}%; background: ${isCheapest ? '#27AE60' : '#c39678'}; border-radius: 2px; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div class="no-results"><p>No pricing data available</p></div>';
+        }
+
+        function filterCompare() {
+            renderCompareTable(currentCompareData);
         }
 
         function closeModal() {
