@@ -146,6 +146,26 @@ def dict_from_row(row):
         return None
     return dict(row)
 
+@app.route('/robots.txt')
+def robots_txt():
+    return """User-agent: *
+Allow: /
+Sitemap: https://ohiohospitalcharges.com/sitemap.xml
+""", 200, {'Content-Type': 'text/plain'}
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ohiohospitalcharges.com/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+""", 200, {'Content-Type': 'application/xml'}
+
 @app.route('/', methods=['GET'])
 def serve_index():
     """Serve the optimized index.html"""
