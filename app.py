@@ -193,6 +193,11 @@ def serve_sitemap():
     """Serve sitemap.xml"""
     return send_from_directory('.', 'sitemap.xml')
 
+@app.route('/googlebf98e125bfb33a39.html')
+def serve_google_verify():
+    """Serve Google Search Console verification file"""
+    return send_from_directory('.', 'googlebf98e125bfb33a39.html')
+
 @app.route('/test')
 def test():
     """Simple test route"""
