@@ -183,6 +183,16 @@ def serve_static(filename):
         return send_from_directory('.', filename)
     return jsonify({'error': 'File not found'}), 404
 
+@app.route('/robots.txt')
+def serve_robots():
+    """Serve robots.txt"""
+    return send_from_directory('.', 'robots.txt')
+
+@app.route('/sitemap.xml')
+def serve_sitemap():
+    """Serve sitemap.xml"""
+    return send_from_directory('.', 'sitemap.xml')
+
 @app.route('/test')
 def test():
     """Simple test route"""
