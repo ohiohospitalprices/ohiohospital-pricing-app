@@ -620,6 +620,128 @@ def server_error(error):
         'message': str(error)
     }), 500
 
+@app.route('/api/docs', methods=['GET'])
+def api_docs():
+    """Public API documentation page."""
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ohio Hospital Charges - Public API</title>
+<style>
+body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }}
+code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }}
+pre {{ background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }}
+h1, h2, h3 {{ color: #1a56db; }}
+.endpoint {{ border-left: 4px solid #1a56db; padding-left: 15px; margin: 20px 0; }}
+.method {{ display: inline-block; padding: 2px 8px; border-radius: 3px; color: white; font-weight: bold; font-size: 0.8em; }}
+.get {{ background: #22c55e; }}
+.footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666; }}
+</style></head><body>
+<h1>Ohio Hospital Charges API</h1>
+<p>Public API for Ohio hospital pricing data. No API key required. Rate limit: 60 requests/minute.</p>
+
+<h2>Endpoints</h2>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/procedures</code>
+<p>Search procedures by hospital, category, or keyword.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>hospital</code> — filter by hospital name</li>
+<li><code>category</code> — filter by procedure category</li>
+<li><code>search</code> — keyword search in procedure names</li>
+<li><code>page</code> — page number (default: 1)</li>
+<li><code>per_page</code> — results per page (default: 50, max: 200)</li>
+</ul>
+<p><strong>Example:</strong> <a href="/api/procedures?search=MRI&per_page=5"><code>/api/procedures?search=MRI&per_page=5</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/vector-search</code>
+<p>Semantic search using natural language. Finds procedures by meaning, not just keywords.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>q</code> — natural language query (e.g. "how much is an MRI in Columbus")</li>
+<li><code>limit</code> — max results (default: 10, max: 50)</li>
+</ul>
+<p><strong>Example:</strong> <a href="/api/vector-search?q=knee%20replacement%20cost"><code>/api/vector-search?q=knee replacement cost</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/search</code>
+<p>Combined search: tries semantic search first, falls back to keyword search.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>q</code> — search query</li>
+</ul>
+<p><strong>Example:</strong> <a href="/api/search?q=CT%20scan"><code>/api/search?q=CT scan</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/hospitals</code>
+<p>List all hospitals with pricing data.</p>
+<p><strong>Example:</strong> <a href="/api/hospitals"><code>/api/hospitals</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/categories</code>
+<p>List all procedure categories.</p>
+<p><strong>Example:</strong> <a href="/api/categories"><code>/api/categories</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/stats</code>
+<p>Database statistics (total procedures, hospitals, price range).</p>
+<p><strong>Example:</strong> <a href="/api/stats"><code>/api/stats</code></a></p>
+</div>
+
+<div class="endpoint">
+<span class="method get">GET</span> <code>/api/health</code>
+<p>Health check endpoint.</p>
+<p><strong>Example:</strong> <a href="/api/health"><code>/api/health</code></a></p>
+</div>
+
+<h2>Rate Limiting</h2>
+<p>60 requests per minute per IP. Returns a <code>429 Too Many Requests</code> response if exceeded.<br>
+If you need higher limits for research or journalism, contact us.</p>
+
+<h2>Data License</h2>
+<p>This data is available for public use. If you build something with it, attribution appreciated but not required.<br>
+Powered by the Ohio Transparency Project, a 501(c)(3) nonprofit organization.</p>
+
+<div class="footer">
+<p><a href="/">Back to search</a> | Ohio Hospital Charges &copy; 2026</p>
+</div>
+</body></html>'''
+
+
+# Rate limiter for public API
+_request_times = {}
+RATE_LIMIT = 60  # requests per minute
+
+def check_rate_limit():
+    """Simple in-memory rate limiter."""
+    ip = request.remote_addr or "unknown"
+    now = time.time()
+    if ip in _request_times:
+        window_start, count = _request_times[ip]
+        if now - window_start < 60:
+            if count >= RATE_LIMIT:
+                return False
+            _request_times[ip] = (window_start, count + 1)
+        else:
+            _request_times[ip] = (now, 1)
+    else:
+        _request_times[ip] = (now, 1)
+    return True
+
+@app.before_request
+def apply_rate_limit():
+    """Apply rate limiting to API routes."""
+    if request.path.startswith('/api/') and request.path != '/api/docs':
+        if not check_rate_limit():
+            return jsonify({'error': 'Rate limit exceeded. 60 requests/minute. See /api/docs for details.'}), 429
+
 if __name__ == '__main__':
     # Run with production WSGI server
     # For development: python app.py
