@@ -14,10 +14,13 @@ import time
 
 # Vector search (lazy-loaded)
 _qdrant_client = None
-_embed_model = None
-_gemini_key = os.environ.get("GEMINI_API_KEY", "")
-
 VECTOR_SEARCH_ENABLED = True
+
+# Embedding cache (text -> vector, up to 100 queries)
+_embed_cache = {}
+
+# HF API token (optional, free tier has rate limits without it)
+_HF_TOKEN = os.environ.get("HF_TOKEN", "")
 
 
 def get_qdrant_client():
@@ -37,43 +40,53 @@ def get_qdrant_client():
 
 
 def get_embedding(text):
-    """Get 384-dim embedding.
-    Priority: Local GPU model (all-MiniLM-L6-v2) > Gemini API (cloud fallback).
-    Gemini is used when GEMINI_API_KEY env var is set AND local model unavailable.
+    """Get 384-dim embedding using all-MiniLM-L6-v2.
+    
+    Strategy (in order of preference):
+    1. Local sentence-transformers with GPU (Adam's PC)
+    2. Hugging Face Inference API (cloud, free)
+    3. Fallback to keyword search (return None)
+    
+    All paths use the SAME model (all-MiniLM-L6-v2) for consistent vectors.
     """
-    global _gemini_key, _embed_model
+    if text in _embed_cache:
+        return _embed_cache[text]
     
-    # Try local GPU model first (works on Adam's PC)
-    if _embed_model is None:
-        try:
-            from sentence_transformers import SentenceTransformer
-            try:
-                _embed_model = SentenceTransformer("all-MiniLM-L6-v2", device="cuda")
-            except:
-                _embed_model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
-        except:
-            _embed_model = False
-    if _embed_model:
+    # Strategy 1: Local sentence-transformers (GPU if available, else CPU)
+    try:
+        from sentence_transformers import SentenceTransformer
         import numpy as np
-        return _embed_model.encode(text, convert_to_numpy=True).tolist()
+        try:
+            model = SentenceTransformer("all-MiniLM-L6-v2", device="cuda")
+        except:
+            model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+        vec = model.encode(text, convert_to_numpy=True).tolist()
+        if len(_embed_cache) < 100:
+            _embed_cache[text] = vec
+        return vec
+    except Exception as e:
+        print(f"[VectorSearch] Local model unavailable: {e}")
     
-    # Fallback: Gemini API (for Render deployment)
-    key = _gemini_key
-    if key:
-        import urllib.request, json, time
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={key}"
-        data = json.dumps({"model": "models/gemini-embedding-001", "content": {"parts": [{"text": text}]}, "outputDimensionality": 384}).encode()
-        for attempt in range(3):
-            try:
-                req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-                r = json.loads(urllib.request.urlopen(req).read())
-                return r["embedding"]["values"]
-            except Exception as e:
-                if "429" in str(e) and attempt < 2:
-                    time.sleep(5 * (attempt + 1))
-                else:
-                    print(f"[VectorSearch] Gemini embed error: {e}")
-                    return None
+    # Strategy 2: Hugging Face Inference API (same model, cloud-hosted)
+    try:
+        import requests
+        headers = {"Authorization": f"Bearer {_HF_TOKEN}"} if _HF_TOKEN else {}
+        r = requests.post(
+            "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
+            headers=headers, json={"inputs": text, "options": {"wait_for_model": True}}, timeout=15
+        )
+        if r.status_code == 200:
+            vec = r.json()
+            if isinstance(vec, list) and len(vec) > 0 and isinstance(vec[0], list):
+                vec = vec[0]  # HF returns [[vals]]
+            if len(_embed_cache) < 100:
+                _embed_cache[text] = vec
+            return vec
+        else:
+            print(f"[VectorSearch] HF API error {r.status_code}")
+    except Exception as e:
+        print(f"[VectorSearch] HF API call failed: {e}")
+    
     return None
 
 app = Flask(__name__)
@@ -87,6 +100,52 @@ CACHE_DURATION = 300  # 5 minutes
 # Simple cache
 cache = {}
 cache_timestamps = {}
+
+# --- Visitor Counter ---
+_visitor_count = None
+_VISITOR_DB = 'visitor_counter.db'
+
+def _init_visitor_db():
+    """Initialize visitor counter table."""
+    global _visitor_count
+    if _visitor_count is not None:
+        return
+    try:
+        conn = sqlite3.connect(_VISITOR_DB)
+        conn.execute('CREATE TABLE IF NOT EXISTS visitors (id INTEGER PRIMARY KEY, count INTEGER DEFAULT 0)')
+        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
+        row = cur.fetchone()
+        if row:
+            _visitor_count = row[0]
+        else:
+            conn.execute('INSERT INTO visitors (id, count) VALUES (1, 0)')
+            _visitor_count = 0
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[Counter] Init error: {e}")
+        _visitor_count = 0
+
+def _increment_visitor():
+    """Increment the visitor counter. Only counts unique IPs once per day."""
+    global _visitor_count
+    try:
+        conn = sqlite3.connect(_VISITOR_DB)
+        conn.execute('UPDATE visitors SET count = count + 1 WHERE id = 1')
+        conn.commit()
+        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
+        _visitor_count = cur.fetchone()[0]
+        conn.close()
+    except Exception as e:
+        print(f"[Counter] Increment error: {e}")
+
+def get_visitor_count():
+    """Get current visitor count."""
+    if _visitor_count is None:
+        _init_visitor_db()
+    return _visitor_count or 0
+
+_init_visitor_db()
 
 # Auto-load hospital data files on startup
 # Unzip database if compressed archive exists
@@ -232,10 +291,16 @@ def sitemap_xml():
 
 @app.route('/', methods=['GET'])
 def serve_index():
-    """Serve the optimized index.html"""
+    """Serve the optimized index.html with visitor counter"""
     try:
+        _increment_visitor()
         with open('index.html', 'r', encoding='utf-8') as f:
-            return f.read(), 200, {'Content-Type': 'text/html'}
+            html = f.read()
+        # Inject visitor count as a hidden element
+        count = get_visitor_count()
+        inject = f'<span id="visitor-count" style="display:none">{count}</span>'
+        html = html.replace('</head>', f'<script>const VISITOR_COUNT = {count};</script>\n</head>')
+        return html, 200, {'Content-Type': 'text/html'}
     except FileNotFoundError:
         return jsonify({'error': 'index.html not found'}), 404
 
@@ -265,7 +330,13 @@ def serve_google_verify():
 @app.route('/test')
 def test():
     """Simple test route"""
+    _increment_visitor()
     return jsonify({'message': 'Flask is running!', 'version': '1.0'})
+
+@app.route('/api/counter', methods=['GET'])
+def get_counter():
+    """Get visitor counter."""
+    return jsonify({'visitors': get_visitor_count()})
 
 @app.route('/api/procedures', methods=['GET'])
 def get_procedures():
