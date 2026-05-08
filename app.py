@@ -67,38 +67,32 @@ def get_embedding(text):
     except Exception as e:
         print(f"[VectorSearch] Local model unavailable: {e}")
     
-    # Strategy 2: Hugging Face Inference API (same model, cloud-hosted)
+    # Strategy 2: Gemini API (cloud, free tier, 384-dim matching Qdrant)
     try:
         import requests
-        headers = {"Authorization": f"Bearer {_HF_TOKEN}"} if _HF_TOKEN else {}
-        r = requests.post(
-            "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
-            headers=headers, json={"inputs": text, "options": {"wait_for_model": True}}, timeout=30
-        )
-        if r.status_code == 200:
-            vec = r.json()
-            if isinstance(vec, list) and len(vec) > 0 and isinstance(vec[0], list):
-                vec = vec[0]  # HF returns [[vals]]
-            if len(_embed_cache) < 100:
-                _embed_cache[text] = vec
-            return vec
-        elif r.status_code == 503:
-            print(f"[VectorSearch] HF model loading... retrying")
-            import time
-            time.sleep(5)
-            r2 = requests.post(
-                "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
-                headers=headers, json={"inputs": text}, timeout=60
+        gkey = os.environ.get('GEMINI_API_KEY', '')
+        if gkey:
+            gemini_payload = {
+                "model": "models/gemini-embedding-exp-03-07",
+                "content": {"parts": [{"text": text}]},
+                "outputDimensionality": 384
+            }
+            r = requests.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-exp-03-07:embedContent?key={gkey}",
+                json=gemini_payload,
+                timeout=15
             )
-            if r2.status_code == 200:
-                vec = r2.json()
-                if isinstance(vec, list) and len(vec) > 0 and isinstance(vec[0], list):
-                    vec = vec[0]
-                return vec
-        else:
-            print(f"[VectorSearch] HF API error {r.status_code}")
+            if r.status_code == 200:
+                data = r.json()
+                vec = data.get('embedding', {}).get('values', [])
+                if vec:
+                    if len(_embed_cache) < 100:
+                        _embed_cache[text] = vec
+                    return vec
+            else:
+                print(f"[VectorSearch] Gemini API error {r.status_code}: {r.text[:200]}")
     except Exception as e:
-        print(f"[VectorSearch] HF API call failed: {e}")
+        print(f"[VectorSearch] Gemini API call failed: {e}")
     
     return None
 
