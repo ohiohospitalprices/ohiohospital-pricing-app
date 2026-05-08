@@ -14,6 +14,7 @@ import time
 
 # Vector search (lazy-loaded)
 _qdrant_client = None
+_embed_model = None
 _gemini_key = os.environ.get("GEMINI_API_KEY", "")
 
 VECTOR_SEARCH_ENABLED = True
@@ -36,24 +37,43 @@ def get_qdrant_client():
 
 
 def get_embedding(text):
-    """Get 384-dim embedding via Gemini API (free, no GPU needed)."""
-    global _gemini_key
-    key = _gemini_key or "AIzaSyD4qXhwKg_jX-YA3LoVD0uFwRAyRZiga-I"
-    import urllib.request, json, time
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={key}"
-    data = json.dumps({"model": "models/gemini-embedding-001", "content": {"parts": [{"text": text}]}, "outputDimensionality": 384}).encode()
-    for attempt in range(3):
+    """Get 384-dim embedding.
+    Priority: Local GPU model (all-MiniLM-L6-v2) > Gemini API (cloud fallback).
+    Gemini is used when GEMINI_API_KEY env var is set AND local model unavailable.
+    """
+    global _gemini_key, _embed_model
+    
+    # Try local GPU model first (works on Adam's PC)
+    if _embed_model is None:
         try:
-            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-            r = json.loads(urllib.request.urlopen(req).read())
-            return r["embedding"]["values"]
-        except Exception as e:
-            err = str(e)
-            if "429" in err and attempt < 2:
-                time.sleep(5 * (attempt + 1))
-            else:
-                print(f"[VectorSearch] Gemini embed error: {e}")
-                return None
+            from sentence_transformers import SentenceTransformer
+            try:
+                _embed_model = SentenceTransformer("all-MiniLM-L6-v2", device="cuda")
+            except:
+                _embed_model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+        except:
+            _embed_model = False
+    if _embed_model:
+        import numpy as np
+        return _embed_model.encode(text, convert_to_numpy=True).tolist()
+    
+    # Fallback: Gemini API (for Render deployment)
+    key = _gemini_key
+    if key:
+        import urllib.request, json, time
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={key}"
+        data = json.dumps({"model": "models/gemini-embedding-001", "content": {"parts": [{"text": text}]}, "outputDimensionality": 384}).encode()
+        for attempt in range(3):
+            try:
+                req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+                r = json.loads(urllib.request.urlopen(req).read())
+                return r["embedding"]["values"]
+            except Exception as e:
+                if "429" in str(e) and attempt < 2:
+                    time.sleep(5 * (attempt + 1))
+                else:
+                    print(f"[VectorSearch] Gemini embed error: {e}")
+                    return None
     return None
 
 app = Flask(__name__)
