@@ -3,3 +3,4 @@ Flask-CORS==4.0.0
 gunicorn==21.2.0
 qdrant-client==1.17.0
 numpy==1.26.0
+sentence-transformers==3.4.1
