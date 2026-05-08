@@ -12,6 +12,50 @@ import zipfile
 from pathlib import Path
 import time
 
+# Vector search (lazy-loaded)
+_qdrant_client = None
+_gemini_key = os.environ.get("GEMINI_API_KEY", "")
+
+VECTOR_SEARCH_ENABLED = True
+
+
+def get_qdrant_client():
+    """Lazy-load Qdrant client."""
+    global _qdrant_client
+    if _qdrant_client is None:
+        try:
+            from qdrant_client import QdrantClient
+            _qdrant_client = QdrantClient(
+                url="https://3827842b-99bd-4705-a080-6cc2029482b9.us-west-1-0.aws.cloud.qdrant.io:6333",
+                api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6MGEzNzQ4NjItNzZiNi00OGEyLWE5NWQtZWQwODg4Yjg0ODVkIn0.v0-LhCBGraFw9k3wlLh-oJab38epNah3VWV7AhLp02E"
+            )
+        except Exception as e:
+            print(f"[VectorSearch] Failed to init Qdrant: {e}")
+            _qdrant_client = None
+    return _qdrant_client
+
+
+def get_embedding(text):
+    """Get 384-dim embedding via Gemini API (free, no GPU needed)."""
+    global _gemini_key
+    key = _gemini_key or "AIzaSyD4qXhwKg_jX-YA3LoVD0uFwRAyRZiga-I"
+    import urllib.request, json, time
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={key}"
+    data = json.dumps({"model": "models/gemini-embedding-001", "content": {"parts": [{"text": text}]}, "outputDimensionality": 384}).encode()
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+            r = json.loads(urllib.request.urlopen(req).read())
+            return r["embedding"]["values"]
+        except Exception as e:
+            err = str(e)
+            if "429" in err and attempt < 2:
+                time.sleep(5 * (attempt + 1))
+            else:
+                print(f"[VectorSearch] Gemini embed error: {e}")
+                return None
+    return None
+
 app = Flask(__name__)
 CORS(app)
 
@@ -414,14 +458,90 @@ def get_stats():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/vector-search', methods=['GET'])
+def vector_search():
+    """Semantic search using Qdrant vector database."""
+    query_text = request.args.get('q', '')
+    limit = request.args.get('limit', 10, type=int)
+    
+    if not query_text or len(query_text) < 2:
+        return jsonify({'results': [], 'error': 'Query too short'})
+    
+    limit = min(limit, 50)
+    client = get_qdrant_client()
+    if client is None:
+        return jsonify({'results': [], 'error': 'Vector search unavailable'}), 503
+    
+    try:
+        embedding = get_embedding(query_text)
+        if embedding is None:
+            return jsonify({'results': [], 'error': 'Embedding unavailable'}), 503
+        
+        # Use query_points (v1.17+ API) instead of search
+        result = client.query_points(
+            collection_name="ohio_procedures",
+            query=embedding,
+            limit=limit
+        )
+        results = result.points if hasattr(result, 'points') else result
+        
+        return jsonify({
+            'query': query_text,
+            'results': [{
+                'procedure_name': r.payload['procedure_name'],
+                'cpt_code': r.payload['cpt_code'],
+                'category': r.payload['category'],
+                'hospital_count': r.payload['hospital_count'],
+                'min_price': r.payload['min_price'],
+                'avg_price': r.payload['avg_price'],
+                'max_price': r.payload['max_price'],
+                'hospitals': r.payload.get('hospitals', []),
+                'score': round(r.score, 4)
+            } for r in results],
+            'count': len(results),
+            'vector_search': True
+        })
+    except Exception as e:
+        print(f"[VectorSearch] Error: {e}")
+        return jsonify({'results': [], 'error': str(e)}), 500
+
+
 @app.route('/api/search', methods=['GET'])
 def search():
-    """Combined search endpoint"""
+    """Combined search endpoint - falls back to try vector search first, then keyword"""
     query_text = request.args.get('q', '')
     
     if not query_text or len(query_text) < 2:
         return jsonify({'results': []})
     
+    # Try vector search first
+    try:
+        client = get_qdrant_client()
+        if client is not None:
+            embedding = get_embedding(query_text)
+            if embedding is not None:
+                result = client.query_points(
+                    collection_name="ohio_procedures",
+                    query=embedding,
+                    limit=20
+                )
+                points = result.points if hasattr(result, 'points') else result
+                response_results = [{
+                    'procedure_name': r.payload['procedure_name'],
+                    'cpt_code': r.payload['cpt_code'],
+                    'category': r.payload['category'],
+                    'hospital_count': r.payload['hospital_count'],
+                    'min_price': r.payload['min_price'],
+                    'avg_price': r.payload['avg_price'],
+                    'max_price': r.payload['max_price'],
+                    'hospitals': r.payload.get('hospitals', []),
+                    'score': round(r.score, 4)
+                } for r in points]
+                return jsonify({'results': response_results, 'count': len(response_results), 'vector_search': True})
+    except:
+        pass
+    
+    # Fallback to keyword search
     try:
         query = """
             SELECT DISTINCT hospital, category, procedure_name, cpt_code, price
@@ -438,7 +558,7 @@ def search():
         
         results = [dict(row) for row in rows]
         
-        return jsonify({'results': results, 'count': len(results)})
+        return jsonify({'results': results, 'count': len(results), 'vector_search': False})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

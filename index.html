@@ -448,6 +448,23 @@
             transition: all 0.3s ease;
         }
 
+        .score-badge {
+            display: inline-block;
+            font-size: 0.65em;
+            background: #1b6a9e;
+            color: white;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-left: 6px;
+            vertical-align: middle;
+            font-weight: 500;
+        }
+        
+        .hosp-count {
+            font-size: 0.75em;
+            color: #888;
+        }
+
         .price-bar.highest {
             background: #E74C3C;
             box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
@@ -2247,11 +2264,14 @@
                     Search Procedures
                     <span class="tooltip-container help-icon">
                         ?
-                        <span class="tooltip-text">Type a procedure name to find prices (e.g., 'MRI', 'Blood Test', 'Knee Surgery')</span>
+                        <span class="tooltip-text">Search naturally: 'how much is an MRI', 'cheapest knee surgery in Columbus', 'hip replacement cost'</span>
                     </span>
                 </label>
-                <input type="text" id="search" class="search-input" placeholder="Try: 'MRI', 'CT Scan', 'Blood Test'">
-                <p class="search-placeholder-hint">💡 Tip: Search by procedure name or CPT code</p>
+                <div class="smart-search-wrapper" style="position: relative;">
+                    <input type="text" id="search" class="search-input" placeholder="Ask naturally: 'How much is an MRI in Columbus?'" autocomplete="off">
+                    <span id="search-spinner" style="display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#999;">⏳</span>
+                </div>
+                <p class="search-placeholder-hint">💡 Try: 'knee replacement', 'cheapest hospital for MRI', 'CT scan near Cleveland', or type a CPT code</p>
             </div>
 
             <div class="content">
@@ -3558,9 +3578,17 @@
             }
         }
 
+        let searchTimeout = null;
+
         function buildApiUrl() {
             if (currentSearch && currentSearch.trim()) {
-                return '/api/search?q=' + encodeURIComponent(currentSearch.trim());
+                // Use vector search for longer/queries, traditional for short/CPT
+                const q = currentSearch.trim();
+                if (q.length <= 3 && /^[0-9]+$/.test(q)) {
+                    return '/api/search?q=' + encodeURIComponent(q);
+                }
+                // Try vector search first (faster, better results)
+                return '/api/vector-search?q=' + encodeURIComponent(q);
             }
             const params = new URLSearchParams();
             if (currentHospital) params.set('hospital', currentHospital);
@@ -3577,8 +3605,48 @@
             container.innerHTML = '<div class="no-results"><h3>Loading...</h3><p>Fetching pricing data</p></div>';
             if (resultCountEl) resultCountEl.textContent = 'Loading...';
 
+            let data = null;
+            let usedFallback = false;
+            
+            // Try vector search first, fall back to keyword search
+            const url = buildApiUrl();
+            
             try {
-                const url = buildApiUrl();
+                const response = await fetch(url);
+                if (response.ok) {
+                    data = await response.json();
+                } else {
+                    throw new Error('Vector search returned ' + response.status);
+                }
+            } catch (err) {
+                // Vector search failed, fall back to keyword search
+                const q = currentSearch ? currentSearch.trim() : '';
+                if (q) {
+                    console.log('Vector search unavailable, using keyword search');
+                    const fallbackUrl = '/api/search?q=' + encodeURIComponent(q);
+                    const resp = await fetch(fallbackUrl);
+                    if (resp.ok) {
+                        data = await resp.json();
+                        usedFallback = true;
+                    }
+                }
+            }
+            
+            if (!data) {
+                // Last resort: load all procedures
+                const fallbackUrl = buildApiUrl().replace('/api/vector-search?q=', '/api/procedures?search=');
+                const resp = await fetch(fallbackUrl.replace('/api/vector-search?q=', '/api/procedures?search='));
+                if (resp.ok) {
+                    data = await resp.json();
+                }
+            }
+            
+            if (!data) {
+                container.innerHTML = '<div class="no-results"><h3>No results</h3><p>Try a different search</p></div>';
+                return;
+            }
+            
+            lastApiResponse = data;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Server returned ' + response.status);
@@ -3586,56 +3654,112 @@
                 const data = await response.json();
                 lastApiResponse = data;
 
-                // Normalize field names — API uses cpt_code/procedure_name, old JSON used cpt/procedure
+                const isVectorSearch = data.vector_search === true;
                 const rawProcedures = data.procedures || data.results || [];
                 const total = data.total || data.count || 0;
-                const procedures = rawProcedures.map(p => ({
-                    cpt: p.cpt || p.cpt_code || '',
-                    procedure: p.procedure || p.procedure_name || '',
-                    hospital: p.hospital || '',
-                    price: p.price || 0,
-                    category: p.category || ''
-                }));
+                
+                // Normalize field names
+                let procedures;
+                if (isVectorSearch) {
+                    // Vector search returns aggregated procedure data with prices ranges
+                    procedures = rawProcedures.map(p => ({
+                        cpt: p.cpt_code || '',
+                        procedure: p.procedure_name || '',
+                        category: p.category || '',
+                        min_price: p.min_price || 0,
+                        avg_price: p.avg_price || 0,
+                        max_price: p.max_price || 0,
+                        hospital_count: p.hospital_count || 0,
+                        score: p.score || 0,
+                        hospitals: p.hospitals || [],
+                        // For compatibility with existing display: use avg price
+                        price: p.avg_price || p.min_price || 0,
+                        hospital: ''  // No single hospital in aggregated view
+                    }));
+                    // Show relevance badge
+                } else if (data.results && data.results.length > 0 && data.results[0].hospital_count !== undefined) {
+                    // Mixed format
+                    procedures = rawProcedures.map(p => ({
+                        cpt: p.cpt_code || '',
+                        procedure: p.procedure_name || '',
+                        category: p.category || '',
+                        min_price: p.min_price || 0,
+                        avg_price: p.avg_price || 0,
+                        max_price: p.max_price || 0,
+                        hospital_count: p.hospital_count || 0,
+                        score: p.score || 0,
+                        hospitals: p.hospitals || [],
+                        price: p.avg_price || p.min_price || 0,
+                        hospital: ''
+                    }));
+                } else {
+                    // Traditional format: individual hospital prices
+                    procedures = rawProcedures.map(p => ({
+                        cpt: p.cpt || p.cpt_code || '',
+                        procedure: p.procedure || p.procedure_name || '',
+                        hospital: p.hospital || '',
+                        price: p.price || 0,
+                        category: p.category || ''
+                    }));
+                }
+                
                 const shown = procedures.length;
 
                 // Update result count
-                if (total > shown) {
+                if (isVectorSearch && total > 0) {
+                    resultCountEl.textContent = 'Found ' + shown + ' procedures matching your search (vector search)';
+                } else if (total > shown) {
                     resultCountEl.textContent = 'Showing ' + shown + ' of ' + total.toLocaleString() + ' procedures';
                 } else {
                     resultCountEl.textContent = 'Showing ' + shown + ' procedures';
                 }
 
                 if (shown === 0) {
-                    container.innerHTML = '<div class="no-results"><h3>No procedures found</h3><p>Try adjusting your filters</p></div>';
+                    container.innerHTML = '<div class="no-results"><h3>No procedures found</h3><p>Try different words or ' + (currentSearch ? 'check your spelling' : 'adjust your filters') + '</p></div>';
                     return;
                 }
 
                 // Get unique procedure keys for price tier comparison
                 const uniqueProcedures = {};
                 procedures.forEach(p => {
-                    const key = p.cpt + '|' + p.procedure;
+                    const key = p.cpt + '|' + (p.procedure || '');
                     if (!uniqueProcedures[key]) {
                         uniqueProcedures[key] = [];
                     }
-                    uniqueProcedures[key].push(p.price);
+                    if (p.price) uniqueProcedures[key].push(p.price);
                 });
 
-                // Build displayed procedures (sorted)
-                const sorted = [...procedures].sort((a, b) => a.procedure.localeCompare(b.procedure));
+                // Build displayed procedures (sorted by relevance score for vector search)
+                let sorted;
+                if (isVectorSearch) {
+                    sorted = [...procedures].sort((a, b) => (b.score || 0) - (a.score || 0));
+                } else {
+                    sorted = [...procedures].sort((a, b) => a.procedure.localeCompare(b.procedure));
+                }
 
                 container.innerHTML = sorted.map(procedure => {
-                    const key = procedure.cpt + '|' + procedure.procedure;
+                    const key = procedure.cpt + '|' + (procedure.procedure || '');
                     const allPrices = uniqueProcedures[key];
-                    const tier = getPriceTier(procedure.price, allPrices);
-                    const isBookmarked = savedHospitals.includes(procedure.hospital);
+                    const tier = getPriceTier(procedure.price, allPrices || [procedure.price]);
+                    
+                    // For vector search results, show price range and score
+                    const relevanceBadge = procedure.score > 0 ? 
+                        `<span class="score-badge" title="Relevance score">${Math.round(procedure.score * 100)}% match</span>` : '';
+                    
+                    const priceDisplay = procedure.hospital_count > 0 ?
+                        `<span>$${(procedure.min_price || 0).toLocaleString()} - $${(procedure.max_price || 0).toLocaleString()}</span>` :
+                        `<span>$${(procedure.price || 0).toLocaleString()}</span>`;
+                    
+                    const hospCount = procedure.hospital_count > 0 ? 
+                        `<span class="hosp-count" style="font-size:10px;color:#999;margin-left:8px;">${procedure.hospital_count} hospitals</span>` : '';
 
                     return `
-                        <div class="procedure-item" onclick="openModal('${procedure.procedure.replace(/'/g, "\\'")}', '${procedure.cpt}')">
+                        <div class="procedure-item" onclick="openModal('${(procedure.procedure || '').replace(/'/g, "\\'")}', '${procedure.cpt}')">
                             <div class="procedure-header">
-                                <span class="procedure-name">${escapeHtml(procedure.procedure)}</span>
+                                <span class="procedure-name">${escapeHtml(procedure.procedure || '')} ${relevanceBadge}</span>
                                 <div class="procedure-price">
-                                    <div class="price-bar ${tier}" title="Price tier: ${tier}"></div>
-                                    $${(procedure.price || 0).toLocaleString()}
+                                    <div class="price-bar ${tier || 'medium'}" title="Price tier: ${tier || 'medium'}"></div>
+                                    ${priceDisplay}${hospCount}
                                 </div>
                             </div>
                             <div class="procedure-details">
@@ -3770,9 +3894,31 @@
             });
         });
 
+        // Smart search with debounce - uses AI vector search for natural language queries
         document.getElementById('search').addEventListener('input', (e) => {
             currentSearch = e.target.value;
-            updateResults();
+            
+            // Show spinner for longer queries
+            const spinner = document.getElementById('search-spinner');
+            if (currentSearch.length > 3) {
+                spinner.style.display = 'block';
+            }
+            
+            // Debounce: wait 400ms after user stops typing
+            if (searchTimeout) clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                updateResults();
+                if (spinner) spinner.style.display = 'none';
+            }, 400);
+        });
+        
+        // Also search on Enter key for immediate feedback
+        document.getElementById('search').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (searchTimeout) clearTimeout(searchTimeout);
+                document.getElementById('search-spinner').style.display = 'none';
+                updateResults();
+            }
         });
 
         document.querySelector('.close-btn').addEventListener('click', closeModal);
