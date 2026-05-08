@@ -72,8 +72,8 @@ def get_embedding(text):
         import requests
         headers = {"Authorization": f"Bearer {_HF_TOKEN}"} if _HF_TOKEN else {}
         r = requests.post(
-            "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
-            headers=headers, json={"inputs": text, "options": {"wait_for_model": True}}, timeout=15
+            "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
+            headers=headers, json={"inputs": text, "options": {"wait_for_model": True}}, timeout=30
         )
         if r.status_code == 200:
             vec = r.json()
@@ -82,6 +82,19 @@ def get_embedding(text):
             if len(_embed_cache) < 100:
                 _embed_cache[text] = vec
             return vec
+        elif r.status_code == 503:
+            print(f"[VectorSearch] HF model loading... retrying")
+            import time
+            time.sleep(5)
+            r2 = requests.post(
+                "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
+                headers=headers, json={"inputs": text}, timeout=60
+            )
+            if r2.status_code == 200:
+                vec = r2.json()
+                if isinstance(vec, list) and len(vec) > 0 and isinstance(vec[0], list):
+                    vec = vec[0]
+                return vec
         else:
             print(f"[VectorSearch] HF API error {r.status_code}")
     except Exception as e:
