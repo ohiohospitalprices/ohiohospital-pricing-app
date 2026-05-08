@@ -73,12 +73,12 @@ def get_embedding(text):
         gkey = os.environ.get('GEMINI_API_KEY', '')
         if gkey:
             gemini_payload = {
-                "model": "models/gemini-embedding-exp-03-07",
+                "model": "models/gemini-embedding-001",
                 "content": {"parts": [{"text": text}]},
                 "outputDimensionality": 384
             }
             r = requests.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-exp-03-07:embedContent?key={gkey}",
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={gkey}",
                 json=gemini_payload,
                 timeout=15
             )
@@ -89,8 +89,10 @@ def get_embedding(text):
                     if len(_embed_cache) < 100:
                         _embed_cache[text] = vec
                     return vec
+            elif r.status_code == 429:
+                print(f"[VectorSearch] Gemini rate limited (429)")
             else:
-                print(f"[VectorSearch] Gemini API error {r.status_code}: {r.text[:200]}")
+                print(f"[VectorSearch] Gemini API error {r.status_code}")
     except Exception as e:
         print(f"[VectorSearch] Gemini API call failed: {e}")
     
