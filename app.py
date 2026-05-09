@@ -12,92 +12,6 @@ import zipfile
 from pathlib import Path
 import time
 
-# Vector search (lazy-loaded)
-_qdrant_client = None
-VECTOR_SEARCH_ENABLED = True
-
-# Embedding cache (text -> vector, up to 100 queries)
-_embed_cache = {}
-
-# HF API token (optional, free tier has rate limits without it)
-_HF_TOKEN = os.environ.get("HF_TOKEN", "")
-
-
-def get_qdrant_client():
-    """Lazy-load Qdrant client."""
-    global _qdrant_client
-    if _qdrant_client is None:
-        try:
-            from qdrant_client import QdrantClient
-            _qdrant_client = QdrantClient(
-                url="https://3827842b-99bd-4705-a080-6cc2029482b9.us-west-1-0.aws.cloud.qdrant.io:6333",
-                api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6MGEzNzQ4NjItNzZiNi00OGEyLWE5NWQtZWQwODg4Yjg0ODVkIn0.v0-LhCBGraFw9k3wlLh-oJab38epNah3VWV7AhLp02E"
-            )
-        except Exception as e:
-            print(f"[VectorSearch] Failed to init Qdrant: {e}")
-            _qdrant_client = None
-    return _qdrant_client
-
-
-def get_embedding(text):
-    """Get 384-dim embedding using all-MiniLM-L6-v2.
-    
-    Strategy (in order of preference):
-    1. Local sentence-transformers with GPU (Adam's PC)
-    2. Hugging Face Inference API (cloud, free)
-    3. Fallback to keyword search (return None)
-    
-    All paths use the SAME model (all-MiniLM-L6-v2) for consistent vectors.
-    """
-    if text in _embed_cache:
-        return _embed_cache[text]
-    
-    # Strategy 1: Local sentence-transformers (GPU if available, else CPU)
-    try:
-        from sentence_transformers import SentenceTransformer
-        import numpy as np
-        try:
-            model = SentenceTransformer("all-MiniLM-L6-v2", device="cuda")
-        except:
-            model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
-        vec = model.encode(text, convert_to_numpy=True).tolist()
-        if len(_embed_cache) < 100:
-            _embed_cache[text] = vec
-        return vec
-    except Exception as e:
-        print(f"[VectorSearch] Local model unavailable: {e}")
-    
-    # Strategy 2: Gemini API (cloud, free tier, 384-dim matching Qdrant)
-    try:
-        import requests
-        gkey = os.environ.get('GEMINI_API_KEY', '')
-        if gkey:
-            gemini_payload = {
-                "model": "models/gemini-embedding-001",
-                "content": {"parts": [{"text": text}]},
-                "outputDimensionality": 384
-            }
-            r = requests.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={gkey}",
-                json=gemini_payload,
-                timeout=15
-            )
-            if r.status_code == 200:
-                data = r.json()
-                vec = data.get('embedding', {}).get('values', [])
-                if vec:
-                    if len(_embed_cache) < 100:
-                        _embed_cache[text] = vec
-                    return vec
-            elif r.status_code == 429:
-                print(f"[VectorSearch] Gemini rate limited (429)")
-            else:
-                print(f"[VectorSearch] Gemini API error {r.status_code}")
-    except Exception as e:
-        print(f"[VectorSearch] Gemini API call failed: {e}")
-    
-    return None
-
 app = Flask(__name__)
 CORS(app)
 
@@ -109,52 +23,6 @@ CACHE_DURATION = 300  # 5 minutes
 # Simple cache
 cache = {}
 cache_timestamps = {}
-
-# --- Visitor Counter ---
-_visitor_count = None
-_VISITOR_DB = 'visitor_counter.db'
-
-def _init_visitor_db():
-    """Initialize visitor counter table."""
-    global _visitor_count
-    if _visitor_count is not None:
-        return
-    try:
-        conn = sqlite3.connect(_VISITOR_DB)
-        conn.execute('CREATE TABLE IF NOT EXISTS visitors (id INTEGER PRIMARY KEY, count INTEGER DEFAULT 0)')
-        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
-        row = cur.fetchone()
-        if row:
-            _visitor_count = row[0]
-        else:
-            conn.execute('INSERT INTO visitors (id, count) VALUES (1, 0)')
-            _visitor_count = 0
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"[Counter] Init error: {e}")
-        _visitor_count = 0
-
-def _increment_visitor():
-    """Increment the visitor counter. Only counts unique IPs once per day."""
-    global _visitor_count
-    try:
-        conn = sqlite3.connect(_VISITOR_DB)
-        conn.execute('UPDATE visitors SET count = count + 1 WHERE id = 1')
-        conn.commit()
-        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
-        _visitor_count = cur.fetchone()[0]
-        conn.close()
-    except Exception as e:
-        print(f"[Counter] Increment error: {e}")
-
-def get_visitor_count():
-    """Get current visitor count."""
-    if _visitor_count is None:
-        _init_visitor_db()
-    return _visitor_count or 0
-
-_init_visitor_db()
 
 # Auto-load hospital data files on startup
 # Unzip database if compressed archive exists
@@ -278,6 +146,8 @@ def dict_from_row(row):
         return None
     return dict(row)
 
+# --- SEO / Verification ---
+
 @app.route('/robots.txt')
 def robots_txt():
     return """User-agent: *
@@ -298,18 +168,19 @@ def sitemap_xml():
 </urlset>
 """, 200, {'Content-Type': 'application/xml'}
 
+# Google Search Console verification file
+@app.route('/googlebf98e125bfb33a39.html')
+def google_verify():
+    return send_from_directory('.', 'googlebf98e125bfb33a39.html')
+
+# --- Main Routes ---
+
 @app.route('/', methods=['GET'])
 def serve_index():
-    """Serve the optimized index.html with visitor counter"""
+    """Serve the optimized index.html"""
     try:
-        _increment_visitor()
         with open('index.html', 'r', encoding='utf-8') as f:
-            html = f.read()
-        # Inject visitor count as a hidden element
-        count = get_visitor_count()
-        inject = f'<span id="visitor-count" style="display:none">{count}</span>'
-        html = html.replace('</head>', f'<script>const VISITOR_COUNT = {count};</script>\n</head>')
-        return html, 200, {'Content-Type': 'text/html'}
+            return f.read(), 200, {'Content-Type': 'text/html'}
     except FileNotFoundError:
         return jsonify({'error': 'index.html not found'}), 404
 
@@ -321,31 +192,12 @@ def serve_static(filename):
         return send_from_directory('.', filename)
     return jsonify({'error': 'File not found'}), 404
 
-@app.route('/robots.txt')
-def serve_robots():
-    """Serve robots.txt"""
-    return send_from_directory('.', 'robots.txt')
-
-@app.route('/sitemap.xml')
-def serve_sitemap():
-    """Serve sitemap.xml"""
-    return send_from_directory('.', 'sitemap.xml')
-
-@app.route('/googlebf98e125bfb33a39.html')
-def serve_google_verify():
-    """Serve Google Search Console verification file"""
-    return send_from_directory('.', 'googlebf98e125bfb33a39.html')
-
 @app.route('/test')
 def test():
     """Simple test route"""
-    _increment_visitor()
     return jsonify({'message': 'Flask is running!', 'version': '1.0'})
 
-@app.route('/api/counter', methods=['GET'])
-def get_counter():
-    """Get visitor counter."""
-    return jsonify({'visitors': get_visitor_count()})
+# --- API Routes ---
 
 @app.route('/api/procedures', methods=['GET'])
 def get_procedures():
@@ -558,90 +410,14 @@ def get_stats():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/vector-search', methods=['GET'])
-def vector_search():
-    """Semantic search using Qdrant vector database."""
-    query_text = request.args.get('q', '')
-    limit = request.args.get('limit', 10, type=int)
-    
-    if not query_text or len(query_text) < 2:
-        return jsonify({'results': [], 'error': 'Query too short'})
-    
-    limit = min(limit, 50)
-    client = get_qdrant_client()
-    if client is None:
-        return jsonify({'results': [], 'error': 'Vector search unavailable'}), 503
-    
-    try:
-        embedding = get_embedding(query_text)
-        if embedding is None:
-            return jsonify({'results': [], 'error': 'Embedding unavailable'}), 503
-        
-        # Use query_points (v1.17+ API) instead of search
-        result = client.query_points(
-            collection_name="ohio_procedures",
-            query=embedding,
-            limit=limit
-        )
-        results = result.points if hasattr(result, 'points') else result
-        
-        return jsonify({
-            'query': query_text,
-            'results': [{
-                'procedure_name': r.payload['procedure_name'],
-                'cpt_code': r.payload['cpt_code'],
-                'category': r.payload['category'],
-                'hospital_count': r.payload['hospital_count'],
-                'min_price': r.payload['min_price'],
-                'avg_price': r.payload['avg_price'],
-                'max_price': r.payload['max_price'],
-                'hospitals': r.payload.get('hospitals', []),
-                'score': round(r.score, 4)
-            } for r in results],
-            'count': len(results),
-            'vector_search': True
-        })
-    except Exception as e:
-        print(f"[VectorSearch] Error: {e}")
-        return jsonify({'results': [], 'error': str(e)}), 500
-
-
 @app.route('/api/search', methods=['GET'])
 def search():
-    """Combined search endpoint - falls back to try vector search first, then keyword"""
+    """Combined search endpoint"""
     query_text = request.args.get('q', '')
     
     if not query_text or len(query_text) < 2:
         return jsonify({'results': []})
     
-    # Try vector search first
-    try:
-        client = get_qdrant_client()
-        if client is not None:
-            embedding = get_embedding(query_text)
-            if embedding is not None:
-                result = client.query_points(
-                    collection_name="ohio_procedures",
-                    query=embedding,
-                    limit=20
-                )
-                points = result.points if hasattr(result, 'points') else result
-                response_results = [{
-                    'procedure_name': r.payload['procedure_name'],
-                    'cpt_code': r.payload['cpt_code'],
-                    'category': r.payload['category'],
-                    'hospital_count': r.payload['hospital_count'],
-                    'min_price': r.payload['min_price'],
-                    'avg_price': r.payload['avg_price'],
-                    'max_price': r.payload['max_price'],
-                    'hospitals': r.payload.get('hospitals', []),
-                    'score': round(r.score, 4)
-                } for r in points]
-                return jsonify({'results': response_results, 'count': len(response_results), 'vector_search': True})
-    except:
-        pass
-    
-    # Fallback to keyword search
     try:
         query = """
             SELECT DISTINCT hospital, category, procedure_name, cpt_code, price
@@ -658,7 +434,7 @@ def search():
         
         results = [dict(row) for row in rows]
         
-        return jsonify({'results': results, 'count': len(results), 'vector_search': False})
+        return jsonify({'results': results, 'count': len(results)})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -699,128 +475,6 @@ def server_error(error):
         'error': 'Server error',
         'message': str(error)
     }), 500
-
-@app.route('/api/docs', methods=['GET'])
-def api_docs():
-    """Public API documentation page."""
-    return f'''<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Ohio Hospital Charges - Public API</title>
-<style>
-body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }}
-code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }}
-pre {{ background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }}
-h1, h2, h3 {{ color: #1a56db; }}
-.endpoint {{ border-left: 4px solid #1a56db; padding-left: 15px; margin: 20px 0; }}
-.method {{ display: inline-block; padding: 2px 8px; border-radius: 3px; color: white; font-weight: bold; font-size: 0.8em; }}
-.get {{ background: #22c55e; }}
-.footer {{ margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666; }}
-</style></head><body>
-<h1>Ohio Hospital Charges API</h1>
-<p>Public API for Ohio hospital pricing data. No API key required. Rate limit: 60 requests/minute.</p>
-
-<h2>Endpoints</h2>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/procedures</code>
-<p>Search procedures by hospital, category, or keyword.</p>
-<p><strong>Parameters:</strong></p>
-<ul>
-<li><code>hospital</code> — filter by hospital name</li>
-<li><code>category</code> — filter by procedure category</li>
-<li><code>search</code> — keyword search in procedure names</li>
-<li><code>page</code> — page number (default: 1)</li>
-<li><code>per_page</code> — results per page (default: 50, max: 200)</li>
-</ul>
-<p><strong>Example:</strong> <a href="/api/procedures?search=MRI&per_page=5"><code>/api/procedures?search=MRI&per_page=5</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/vector-search</code>
-<p>Semantic search using natural language. Finds procedures by meaning, not just keywords.</p>
-<p><strong>Parameters:</strong></p>
-<ul>
-<li><code>q</code> — natural language query (e.g. "how much is an MRI in Columbus")</li>
-<li><code>limit</code> — max results (default: 10, max: 50)</li>
-</ul>
-<p><strong>Example:</strong> <a href="/api/vector-search?q=knee%20replacement%20cost"><code>/api/vector-search?q=knee replacement cost</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/search</code>
-<p>Combined search: tries semantic search first, falls back to keyword search.</p>
-<p><strong>Parameters:</strong></p>
-<ul>
-<li><code>q</code> — search query</li>
-</ul>
-<p><strong>Example:</strong> <a href="/api/search?q=CT%20scan"><code>/api/search?q=CT scan</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/hospitals</code>
-<p>List all hospitals with pricing data.</p>
-<p><strong>Example:</strong> <a href="/api/hospitals"><code>/api/hospitals</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/categories</code>
-<p>List all procedure categories.</p>
-<p><strong>Example:</strong> <a href="/api/categories"><code>/api/categories</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/stats</code>
-<p>Database statistics (total procedures, hospitals, price range).</p>
-<p><strong>Example:</strong> <a href="/api/stats"><code>/api/stats</code></a></p>
-</div>
-
-<div class="endpoint">
-<span class="method get">GET</span> <code>/api/health</code>
-<p>Health check endpoint.</p>
-<p><strong>Example:</strong> <a href="/api/health"><code>/api/health</code></a></p>
-</div>
-
-<h2>Rate Limiting</h2>
-<p>60 requests per minute per IP. Returns a <code>429 Too Many Requests</code> response if exceeded.<br>
-If you need higher limits for research or journalism, contact us.</p>
-
-<h2>Data License</h2>
-<p>This data is available for public use. If you build something with it, attribution appreciated but not required.<br>
-Powered by the Ohio Transparency Project, a 501(c)(3) nonprofit organization.</p>
-
-<div class="footer">
-<p><a href="/">Back to search</a> | Ohio Hospital Charges &copy; 2026</p>
-</div>
-</body></html>'''
-
-
-# Rate limiter for public API
-_request_times = {}
-RATE_LIMIT = 60  # requests per minute
-
-def check_rate_limit():
-    """Simple in-memory rate limiter."""
-    ip = request.remote_addr or "unknown"
-    now = time.time()
-    if ip in _request_times:
-        window_start, count = _request_times[ip]
-        if now - window_start < 60:
-            if count >= RATE_LIMIT:
-                return False
-            _request_times[ip] = (window_start, count + 1)
-        else:
-            _request_times[ip] = (now, 1)
-    else:
-        _request_times[ip] = (now, 1)
-    return True
-
-@app.before_request
-def apply_rate_limit():
-    """Apply rate limiting to API routes."""
-    if request.path.startswith('/api/') and request.path != '/api/docs':
-        if not check_rate_limit():
-            return jsonify({'error': 'Rate limit exceeded. 60 requests/minute. See /api/docs for details.'}), 429
 
 if __name__ == '__main__':
     # Run with production WSGI server
