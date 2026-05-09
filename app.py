@@ -24,6 +24,49 @@ CACHE_DURATION = 300  # 5 minutes
 cache = {}
 cache_timestamps = {}
 
+# --- Visitor Counter (lightweight, no AI deps) ---
+_visitor_count = None
+_VISITOR_DB = 'visitor_counter.db'
+
+def _init_visitor_db():
+    global _visitor_count
+    if _visitor_count is not None:
+        return
+    try:
+        conn = sqlite3.connect(_VISITOR_DB)
+        conn.execute('CREATE TABLE IF NOT EXISTS visitors (id INTEGER PRIMARY KEY, count INTEGER DEFAULT 0)')
+        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
+        row = cur.fetchone()
+        if row:
+            _visitor_count = row[0]
+        else:
+            conn.execute('INSERT INTO visitors (id, count) VALUES (1, 0)')
+            _visitor_count = 0
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[Counter] Init error: {e}")
+        _visitor_count = 0
+
+def _increment_visitor():
+    global _visitor_count
+    try:
+        conn = sqlite3.connect(_VISITOR_DB)
+        conn.execute('UPDATE visitors SET count = count + 1 WHERE id = 1')
+        conn.commit()
+        cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
+        _visitor_count = cur.fetchone()[0]
+        conn.close()
+    except Exception as e:
+        print(f"[Counter] Increment error: {e}")
+
+def get_visitor_count():
+    if _visitor_count is None:
+        _init_visitor_db()
+    return _visitor_count or 0
+
+_init_visitor_db()
+
 # Auto-load hospital data files on startup
 # Unzip database if compressed archive exists
 db_path_obj = Path(DB_PATH)
@@ -179,6 +222,7 @@ def google_verify():
 def serve_index():
     """Serve the optimized index.html"""
     try:
+        _increment_visitor()
         with open('index.html', 'r', encoding='utf-8') as f:
             return f.read(), 200, {'Content-Type': 'text/html'}
     except FileNotFoundError:
@@ -438,6 +482,11 @@ def search():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/counter', methods=['GET'])
+def get_counter():
+    """Get visitor count"""
+    return jsonify({'visitors': get_visitor_count()})
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -451,7 +500,8 @@ def health_check():
         return jsonify({
             'status': 'healthy',
             'database': 'connected',
-            'procedures_count': count
+            'procedures_count': count,
+            'visitors': get_visitor_count()
         })
     except Exception as e:
         return jsonify({
