@@ -24,16 +24,15 @@ CACHE_DURATION = 300  # 5 minutes
 cache = {}
 cache_timestamps = {}
 
-# --- Visitor Counter (lightweight, no AI deps) ---
+# --- Visitor Counter (stored in main DB so it survives Render restarts) ---
 _visitor_count = None
-_VISITOR_DB = 'visitor_counter.db'
 
 def _init_visitor_db():
     global _visitor_count
     if _visitor_count is not None:
         return
     try:
-        conn = sqlite3.connect(_VISITOR_DB)
+        conn = sqlite3.connect(DB_PATH)
         conn.execute('CREATE TABLE IF NOT EXISTS visitors (id INTEGER PRIMARY KEY, count INTEGER DEFAULT 0)')
         cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
         row = cur.fetchone()
@@ -51,7 +50,7 @@ def _init_visitor_db():
 def _increment_visitor():
     global _visitor_count
     try:
-        conn = sqlite3.connect(_VISITOR_DB)
+        conn = sqlite3.connect(DB_PATH)
         conn.execute('UPDATE visitors SET count = count + 1 WHERE id = 1')
         conn.commit()
         cur = conn.execute('SELECT count FROM visitors WHERE id = 1')
@@ -59,6 +58,7 @@ def _increment_visitor():
         conn.close()
     except Exception as e:
         print(f"[Counter] Increment error: {e}")
+        _visitor_count = (_visitor_count or 0) + 1  # fallback: increment in memory
 
 def get_visitor_count():
     if _visitor_count is None:
